@@ -31,7 +31,7 @@ The "Idea Bank" is a platform designed to foster innovation by allowing users to
 ### Backend Setup
 
 1.  Navigate to the `backend` directory: `cd backend`
-2.  Install Python dependencies: `pip install -r requirements.txt` (Note: I will create this file next)
+2.  Install Python dependencies: `pip install -r requirements.txt`
 3.  Set up your PostgreSQL database and configure the connection in `backend/idea_bank/settings.py`.
 4.  Apply database migrations: `python manage.py migrate`
 5.  Create a superuser to access the admin panel: `python manage.py createsuperuser`
