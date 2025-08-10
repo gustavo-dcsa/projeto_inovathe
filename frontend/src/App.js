@@ -18,7 +18,7 @@ function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/submit-idea" element={<SubmitIdeaPage />} />
+            <Route path="/submit-idea" element={<NewSubmitIdeaPage />} />
             <Route path="/track-idea" element={<TrackIdeaPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />

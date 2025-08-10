@@ -1,11 +1,24 @@
-backend/idea_bank/__pycache__/__init__.cpython-313.pyc
-backend/idea_bank/__pycache__/settings.cpython-313.pyc
-backend/idea_bank/__pycache__/urls.cpython-313.pyc
-backend/idea_bank/__pycache__/wsgi.cpython-313.pyc
-backend/api/__pycache__/__init__.cpython-313.pyc
-backend/api/__pycache__/admin.cpython-313.pyc
-backend/api/__pycache__/apps.cpython-313.pyc
-backend/api/__pycache__/models.cpython-313.pyc
-backend/api/__pycache__/serializers.cpython-313.pyc
-backend/api/__pycache__/urls.cpython-313.pyc
-backend/api/__pycache__/views.cpython-313.pyc
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+pip-wheel-metadata/
+.idea/
+
+# Django
+*.log
+db.sqlite3
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# OS-specific
+.DS_Store
+Thumbs.db

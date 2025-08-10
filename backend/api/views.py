@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
 from .models import User, Idea, IdeaFeedback, IdeaLike, CalendarEvent, EventRsvp, NewsArticle
 from .serializers import UserSerializer, IdeaSerializer, IdeaFeedbackSerializer, IdeaLikeSerializer, CalendarEventSerializer, EventRsvpSerializer, NewsArticleSerializer
 
@@ -9,6 +10,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class IdeaViewSet(viewsets.ModelViewSet):
     queryset = Idea.objects.all()
     serializer_class = IdeaSerializer
+    permission_classes = [AllowAny]
 
 class IdeaFeedbackViewSet(viewsets.ModelViewSet):
     queryset = IdeaFeedback.objects.all()
