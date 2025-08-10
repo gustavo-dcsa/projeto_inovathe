@@ -1,4 +1,3 @@
-
 # Idea Bank - Innovation Platform
 
 This is a full-featured web platform for innovation and idea management.
@@ -58,4 +57,3 @@ The icons used in this project are from Flaticon. The design brief specified the
 - Insect Icon: `https://www.flaticon.com/br/icone-gratis/inseto_12168378`
 - Honeycomb Icon: `https://www.flaticon.com/br/icone-gratis/caixa-de-abelha_12640713`
 Thank you to the creators of these icons.
-=======
