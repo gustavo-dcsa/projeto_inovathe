@@ -7,6 +7,7 @@ import SubmitIdeaPage from './pages/SubmitIdeaPage';
 import TrackIdeaPage from './pages/TrackIdeaPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import NewSubmitIdeaPage from './pages/NewSubmitIdeaPage';
 import './index.css'; // I'm importing index.css here to get the Tailwind styles
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Route path="/track-idea" element={<TrackIdeaPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
+            <Route path="/new-submit-idea" element={<NewSubmitIdeaPage />} />
             {/* I will add the other routes here later */}
           </Routes>
         </main>

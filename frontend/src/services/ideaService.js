@@ -26,10 +26,15 @@ const getIdeaById = (ideaId, email) => {
   return axios.get(`${API_URL}${ideaId}/`);
 };
 
+const submitNewIdea = (ideaData) => {
+  return axios.post(API_URL, ideaData);
+};
+
 const ideaService = {
   getFeaturedIdeas,
   submitIdea,
   getIdeaById,
+  submitNewIdea,
 };
 
 export default ideaService;
