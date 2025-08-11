@@ -14,14 +14,20 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Token ${token}`;
-      // Here you would typically fetch the user profile
-      // For now, we'll just assume the user is logged in if there's a token.
-      // A proper implementation would verify the token with the backend.
-      setUser({ username: 'User' }); // Placeholder user
-    }
-    setIsLoading(false);
+    const loadUser = async () => {
+      if (token) {
+        axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+        try {
+          const response = await authService.getUser();
+          setUser(response.data);
+        } catch (error) {
+          console.error('Failed to fetch user', error);
+          logout();
+        }
+      }
+      setIsLoading(false);
+    };
+    loadUser();
   }, [token]);
 
   const login = async (email, password) => {
@@ -30,7 +36,8 @@ export const AuthProvider = ({ children }) => {
     setToken(newToken);
     localStorage.setItem('token', newToken);
     axios.defaults.headers.common['Authorization'] = `Token ${newToken}`;
-    setUser({ username: 'User' }); // Placeholder user
+    const userResponse = await authService.getUser();
+    setUser(userResponse.data);
     return response;
   };
 
@@ -40,7 +47,8 @@ export const AuthProvider = ({ children }) => {
     setToken(newToken);
     localStorage.setItem('token', newToken);
     axios.defaults.headers.common['Authorization'] = `Token ${newToken}`;
-    setUser({ username: 'User' }); // Placeholder user
+    const userResponse = await authService.getUser();
+    setUser(userResponse.data);
     return response;
   };
 

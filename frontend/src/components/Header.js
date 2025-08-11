@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 // I'm assuming the logo is named 'abelha.png' as requested.
 // I will need to confirm the actual filename once I can see the files.
-import logo from '../images/abelha.png';
+import logo from '../assets/abelha.png';
 
 const Header = () => {
   const { user, logout } = useAuth();
