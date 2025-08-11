@@ -1,0 +1,70 @@
+.success-animation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.success-animation-container {
+  position: relative;
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.bee {
+  width: 50px;
+  height: 50px;
+  background-image: url('../assets/abelha.png'); /* I'm assuming this is the correct path */
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: -50px;
+  animation: fly-in 2s forwards, buzz 0.2s infinite alternate;
+}
+
+.honey-drip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 2px;
+    height: 0;
+    background-color: #F57921; /* Accent Orange */
+    animation: drip 3s infinite;
+}
+
+@keyframes fly-in {
+  0% {
+    top: -50px;
+    left: -50px;
+  }
+  50% {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  100% {
+    top: 20px;
+    left: calc(50% - 25px);
+  }
+}
+
+@keyframes buzz {
+  from { transform: rotate(-5deg); }
+  to { transform: rotate(5deg); }
+}
+
+@keyframes drip {
+    0% { height: 0; top: 0; }
+    50% { height: 100%; top: 0; }
+    100% { height: 0; top: 100%; }
+}
