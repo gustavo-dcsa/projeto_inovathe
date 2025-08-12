@@ -1,39 +1,32 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
+import { useAuth } from '../context/AuthContext';
 
 const SignupPage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const { signup, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== password2) {
       setErrorMessage("As senhas não correspondem.");
       return;
     }
-    setIsLoading(true);
     setErrorMessage('');
 
-    authService.signup(username, email, password, password2)
-      .then(response => {
-        setIsLoading(false);
-        // After successful signup, dj-rest-auth sends back a key
-        // so we can log the user in directly.
-        localStorage.setItem('token', response.data.key);
-        navigate('/'); // Redirect to home page
-      })
-      .catch(error => {
-        setIsLoading(false);
-        // This needs more granular error handling based on the API response
-        setErrorMessage('Falha ao se cadastrar. Por favor, tente novamente.');
-        console.error('Signup error:', error);
-      });
+    try {
+      await signup(username, email, password, password2);
+      navigate('/'); // Redirect to home page on successful signup
+    } catch (error) {
+      // This needs more granular error handling based on the API response
+      setErrorMessage('Falha ao se cadastrar. Por favor, tente novamente.');
+      console.error('Signup error:', error);
+    }
   };
 
   return (
