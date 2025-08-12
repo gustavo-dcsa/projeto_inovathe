@@ -21,23 +21,23 @@ const TrackIdeaPage = () => {
         if (response.data.submitted_by_email === email) {
           setIdea(response.data);
         } else {
-          setErrorMessage("The email address does not match the one used to submit the idea.");
+          setErrorMessage("O endereço de e-mail não corresponde ao usado para enviar a ideia.");
         }
         setIsLoading(false);
       })
       .catch(error => {
         setIsLoading(false);
-        setErrorMessage('Idea not found. Please check the ID and email and try again.');
+        setErrorMessage('Ideia não encontrada. Por favor, verifique o ID e o e-mail e tente novamente.');
         console.error('Error fetching idea:', error);
       });
   };
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold text-center mb-8 text-[#014D49]">Track Your Idea</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 text-[#014D49]">Acompanhe sua Ideia</h1>
       <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md mb-8">
         <div className="mb-4">
-          <label htmlFor="ideaId" className="block text-[#014D49] font-bold mb-2">Idea ID</label>
+          <label htmlFor="ideaId" className="block text-[#014D49] font-bold mb-2">ID da Ideia</label>
           <input
             type="text"
             id="ideaId"
@@ -48,7 +48,7 @@ const TrackIdeaPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">Your Email</label>
+          <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">Seu E-mail</label>
           <input
             type="email"
             id="email"
@@ -64,7 +64,7 @@ const TrackIdeaPage = () => {
             className="bg-[#00995D] text-white font-bold py-3 px-8 rounded-full hover:bg-[#B1D14A] transition duration-300"
             disabled={isLoading}
           >
-            {isLoading ? 'Searching...' : 'Track Idea'}
+            {isLoading ? 'Buscando...' : 'Acompanhar Ideia'}
           </button>
         </div>
       </form>
@@ -76,10 +76,9 @@ const TrackIdeaPage = () => {
           <h2 className="text-2xl font-bold mb-4">{idea.title}</h2>
           <p className="mb-4">{idea.description}</p>
           <div className="mb-4">
-            <p className="font-bold">Status:</p>
+            <p className="font-bold">Situação:</p>
             <p className="capitalize">{idea.status.replace(/_/g, ' ')}</p>
           </div>
-          {/* Visual timeline and feedback will go here */}
         </div>
       )}
     </div>

@@ -22,24 +22,24 @@ const SubmitIdeaPage = () => {
     ideaService.submitIdea(ideaData)
       .then(response => {
         setIsSubmitting(false);
-        setSubmitMessage(`Idea submitted successfully! Your Idea ID is ${response.data.id}`);
+        setSubmitMessage(`Ideia enviada com sucesso! O ID da sua ideia é ${response.data.id}`);
         setTitle('');
         setDescription('');
         setSubmittedByEmail('');
       })
       .catch(error => {
         setIsSubmitting(false);
-        setSubmitMessage('There was an error submitting your idea. Please try again.');
+        setSubmitMessage('Ocorreu um erro ao enviar sua ideia. Por favor, tente novamente.');
         console.error('Error submitting idea:', error);
       });
   };
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold text-center mb-8 text-[#014D49]">Submit Your Idea</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 text-[#014D49]">Envie sua Ideia</h1>
       <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-md">
         <div className="mb-4">
-          <label htmlFor="title" className="block text-[#014D49] font-bold mb-2">Idea Title</label>
+          <label htmlFor="title" className="block text-[#014D49] font-bold mb-2">Título da Ideia</label>
           <input
             type="text"
             id="title"
@@ -50,7 +50,7 @@ const SubmitIdeaPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">Your Email</label>
+          <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">Seu E-mail</label>
           <input
             type="email"
             id="email"
@@ -61,7 +61,7 @@ const SubmitIdeaPage = () => {
           />
         </div>
         <div className="mb-6">
-          <label htmlFor="description" className="block text-[#014D49] font-bold mb-2">Describe Your Idea</label>
+          <label htmlFor="description" className="block text-[#014D49] font-bold mb-2">Descreva sua Ideia</label>
           <textarea
             id="description"
             value={description}
@@ -77,7 +77,7 @@ const SubmitIdeaPage = () => {
             className="bg-[#00995D] text-white font-bold py-3 px-8 rounded-full hover:bg-[#B1D14A] transition duration-300"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Submitting...' : 'Submit Idea'}
+            {isSubmitting ? 'Enviando...' : 'Enviar Ideia'}
           </button>
         </div>
         {submitMessage && <p className="text-center mt-4">{submitMessage}</p>}
