@@ -86,6 +86,10 @@ class Idea(models.Model):
     inspiration = models.CharField(max_length=255, blank=True, null=True)
     additional_comments = models.TextField(blank=True, null=True)
 
+    # New fields for admin panel
+    is_featured = models.BooleanField(default=False)
+    current_location = models.CharField(max_length=255, blank=True, null=True)
+
 
     def __str__(self):
         return self.title

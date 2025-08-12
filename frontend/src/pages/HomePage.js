@@ -4,6 +4,7 @@ import ideaService from '../services/ideaService';
 
 const HomePage = () => {
   const [featuredIdeas, setFeaturedIdeas] = useState([]);
+  const [likedIdeas, setLikedIdeas] = useState({});
 
   useEffect(() => {
     ideaService.getFeaturedIdeas()
@@ -14,6 +15,12 @@ const HomePage = () => {
         console.error('Error fetching featured ideas:', error);
       });
   }, []);
+
+  const handleLike = (ideaId) => {
+    // This is a visual effect for now.
+    // A real implementation would call the API to like the idea.
+    setLikedIdeas(prev => ({ ...prev, [ideaId]: !prev[ideaId] }));
+  };
 
   return (
     <div className="bg-[#CFE4BD] text-[#014D49]">
@@ -59,13 +66,17 @@ const HomePage = () => {
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {featuredIdeas.length > 0 ? (
             featuredIdeas.map(idea => (
-              <div key={idea.id} className="bg-gray-100 p-6 rounded-lg shadow-md">
+              <div key={idea.id} className="bg-gray-100 p-6 rounded-lg shadow-md transform hover:scale-105 transition-transform duration-300">
                 <h3 className="text-lg font-bold mb-2">{idea.title}</h3>
                 <p className="text-sm mb-4">{idea.description.substring(0, 100)}...</p>
                 <div className="flex justify-between items-center">
+
                   <span className="text-xs text-gray-500">Enviada por: {idea.submitted_by_email}</span>
-                  <button className="bg-[#F57921] text-white text-sm py-1 px-3 rounded-full hover:bg-opacity-80">
-                    Curtir
+                  <button
+                    onClick={() => handleLike(idea.id)}
+                    className={`text-white text-sm py-1 px-3 rounded-full transition-colors duration-300 ${likedIdeas[idea.id] ? 'bg-red-500' : 'bg-[#F57921]'}`}
+                  >
+                    {likedIdeas[idea.id] ? '💚🧡!' : 'Curtir'}
                   </button>
                 </div>
               </div>
@@ -75,6 +86,7 @@ const HomePage = () => {
           )}
         </div>
       </div>
+
     </div>
   );
 };

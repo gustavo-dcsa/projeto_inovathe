@@ -23,10 +23,15 @@ const logout = () => {
   return axios.post(API_URL + 'logout/');
 };
 
+const getUser = () => {
+  return axios.get(API_URL + 'user/');
+};
+
 const authService = {
   signup,
   login,
   logout,
+  getUser,
 };
 
 export default authService;
