@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import UserViewSet, IdeaViewSet, AdminIdeaViewSet, IdeaFeedbackViewSet, IdeaLikeViewSet, CalendarEventViewSet, EventRsvpViewSet, NewsArticleViewSet
+from .views import UserViewSet, IdeaViewSet, IdeaFeedbackViewSet, IdeaLikeViewSet, CalendarEventViewSet, EventRsvpViewSet, NewsArticleViewSet, MyIdeasViewSet
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -11,10 +11,7 @@ router.register(r'events', CalendarEventViewSet)
 router.register(r'rsvps', EventRsvpViewSet)
 router.register(r'news', NewsArticleViewSet)
 
-admin_router = DefaultRouter()
-admin_router.register(r'ideas', AdminIdeaViewSet, basename='admin-idea')
-
 urlpatterns = [
     path('', include(router.urls)),
-    path('admin/', include(admin_router.urls)),
+    path('my-ideas/', MyIdeasViewSet.as_view({'get': 'list'}), name='my-ideas-list'),
 ]
