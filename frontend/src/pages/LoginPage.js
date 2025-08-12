@@ -1,32 +1,25 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
+import { useAuth } from '../context/AuthContext';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const { login, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     setErrorMessage('');
 
-    authService.login(email, password)
-      .then(response => {
-        setIsLoading(false);
-        // Storing the token in local storage for now.
-        // A context-based solution would be better for a real app.
-        localStorage.setItem('token', response.data.key);
-        navigate('/'); // Redirect to home page on successful login
-      })
-      .catch(error => {
-        setIsLoading(false);
-        setErrorMessage('Falha ao fazer login. Por favor, verifique suas credenciais.');
-        console.error('Login error:', error);
-      });
+    try {
+      await login(email, password);
+      navigate('/'); // Redirect to home page on successful login
+    } catch (error) {
+      setErrorMessage('Falha ao fazer login. Por favor, verifique suas credenciais.');
+      console.error('Login error:', error);
+    }
   };
 
   return (
