@@ -1,15 +1,15 @@
 import React from 'react';
-import './SuccessAnimation.css'; // I will create this file next
+import './SuccessAnimation.css';
+import cooperacaoGif from '../images/cooperacao.gif'; // ajuste o caminho se necessário
 
-const SuccessAnimation = ({ message }) => {
+const SuccessAnimation = () => {
   return (
     <div className="success-animation-overlay">
-      <div className="success-animation-container">
-        <div className="bee"></div>
-        <div className="honey-drip"></div>
-        <h2 className="text-2xl font-bold text-[#014D49] mb-4">Thank You!</h2>
-        <p className="text-lg text-[#014D49]">{message}</p>
-      </div>
+      <img
+        src={cooperacaoGif}
+        alt="Carregando..."
+        className="success-animation-gif"
+      />
     </div>
   );
 };
