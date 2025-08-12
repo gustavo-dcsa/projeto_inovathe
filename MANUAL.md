@@ -112,7 +112,7 @@ Agora vamos configurar a parte "inteligente" do projeto.
 
     # Ativa o ambiente
     # No Windows:
-    .\venv\Scripts\activate
+    .venv\Scripts\activate
     # No macOS/Linux:
     source venv/bin/activate
     ```
