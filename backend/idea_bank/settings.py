@@ -45,11 +45,13 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "api",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -81,14 +83,15 @@ WSGI_APPLICATION = "idea_bank.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# TODO: Move secrets to environment variables before deployment
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "idea_bank",
-        "USER": "gustavo_santos",
-        "PASSWORD": "Ferro@600",
-        "HOST": "localhost",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'gustavo_santos',
+        'PASSWORD': 'Ferro-600',
+        'HOST': 'idea-bank.cvy0c6c4wc5t.us-east-2.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
@@ -151,5 +154,9 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
