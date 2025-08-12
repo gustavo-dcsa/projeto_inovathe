@@ -12,7 +12,14 @@ class IdeaAPITest(APITestCase):
         data = {
             'title': 'New Test Idea',
             'description': 'A new test description.',
-            'submitted_by_email': 'test@example.com'
+            'submitted_by_email': 'test@example.com',
+            'full_name': 'Test User',
+            'submission_type': 'Apenas eu',
+            'business_unit': 'Operadora Unimed',
+            'department': 'TI',
+            'position': 'Developer',
+            'idea_category': 'Tecnologia',
+            'expected_benefits': 'Muitos beneficios'
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
