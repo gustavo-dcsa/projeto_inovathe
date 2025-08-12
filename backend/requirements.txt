@@ -3,6 +3,7 @@ dj-rest-auth==7.0.1
 Django==5.2.5
 django-allauth==65.10.0
 djangorestframework==3.16.1
+django-cors-headers==3.13.0
 greenlet==3.2.3
 playwright==1.54.0
 psycopg2-binary==2.9.10
