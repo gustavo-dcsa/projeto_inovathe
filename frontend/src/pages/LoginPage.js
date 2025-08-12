@@ -24,17 +24,17 @@ const LoginPage = () => {
       })
       .catch(error => {
         setIsLoading(false);
-        setErrorMessage('Failed to login. Please check your credentials.');
+        setErrorMessage('Falha ao fazer login. Por favor, verifique suas credenciais.');
         console.error('Login error:', error);
       });
   };
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold text-center mb-8 text-[#014D49]">Login</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 text-[#014D49]">Entrar</h1>
       <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
         <div className="mb-4">
-          <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">Email</label>
+          <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">E-mail</label>
           <input
             type="email"
             id="email"
@@ -45,7 +45,7 @@ const LoginPage = () => {
           />
         </div>
         <div className="mb-6">
-          <label htmlFor="password" className="block text-[#014D49] font-bold mb-2">Password</label>
+          <label htmlFor="password" className="block text-[#014D49] font-bold mb-2">Senha</label>
           <input
             type="password"
             id="password"
@@ -61,12 +61,12 @@ const LoginPage = () => {
             className="bg-[#00995D] text-white font-bold py-3 px-8 rounded-full hover:bg-[#B1D14A] transition duration-300"
             disabled={isLoading}
           >
-            {isLoading ? 'Logging in...' : 'Login'}
+            {isLoading ? 'Entrando...' : 'Entrar'}
           </button>
         </div>
         {errorMessage && <p className="text-center mt-4 text-red-500">{errorMessage}</p>}
         <p className="text-center mt-4">
-          Don't have an account? <Link to="/signup" className="text-[#00995D] hover:underline">Sign up</Link>
+          Não tem uma conta? <Link to="/signup" className="text-[#00995D] hover:underline">Cadastre-se</Link>
         </p>
       </form>
     </div>

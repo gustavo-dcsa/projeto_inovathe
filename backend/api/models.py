@@ -5,8 +5,8 @@ import uuid
 
 class User(AbstractUser):
     ROLE_CHOICES = (
-        ('user', 'User'),
-        ('admin', 'Admin'),
+        ('user', 'Usuário'),
+        ('admin', 'Administrador'),
     )
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
@@ -19,12 +19,12 @@ def generate_idea_id():
 
 class Idea(models.Model):
     STATUS_CHOICES = (
-        ('submitted', 'Submitted'),
-        ('in_department_review', 'In Department Review'),
-        ('in_committee_review', 'In Committee Review'),
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected'),
-        ('implemented', 'Implemented'),
+        ('submitted', 'Enviado'),
+        ('in_department_review', 'Em análise no departamento'),
+        ('in_committee_review', 'Em análise no comitê'),
+        ('approved', 'Aprovado'),
+        ('rejected', 'Rejeitado'),
+        ('implemented', 'Implementado'),
     )
     SUBMISSION_TYPE_CHOICES = (
         ('Apenas eu', 'Apenas eu'),

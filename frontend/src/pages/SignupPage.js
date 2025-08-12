@@ -14,7 +14,7 @@ const SignupPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password !== password2) {
-      setErrorMessage("Passwords do not match.");
+      setErrorMessage("As senhas não correspondem.");
       return;
     }
     setIsLoading(true);
@@ -31,17 +31,17 @@ const SignupPage = () => {
       .catch(error => {
         setIsLoading(false);
         // This needs more granular error handling based on the API response
-        setErrorMessage('Failed to sign up. Please try again.');
+        setErrorMessage('Falha ao se cadastrar. Por favor, tente novamente.');
         console.error('Signup error:', error);
       });
   };
 
   return (
     <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold text-center mb-8 text-[#014D49]">Sign Up</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 text-[#014D49]">Cadastre-se</h1>
       <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
         <div className="mb-4">
-          <label htmlFor="username" className="block text-[#014D49] font-bold mb-2">Username</label>
+          <label htmlFor="username" className="block text-[#014D49] font-bold mb-2">Nome de usuário</label>
           <input
             type="text"
             id="username"
@@ -52,7 +52,7 @@ const SignupPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">Email</label>
+          <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">E-mail</label>
           <input
             type="email"
             id="email"
@@ -63,7 +63,7 @@ const SignupPage = () => {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="block text-[#014D49] font-bold mb-2">Password</label>
+          <label htmlFor="password" className="block text-[#014D49] font-bold mb-2">Senha</label>
           <input
             type="password"
             id="password"
@@ -74,7 +74,7 @@ const SignupPage = () => {
           />
         </div>
         <div className="mb-6">
-          <label htmlFor="password2" className="block text-[#014D49] font-bold mb-2">Confirm Password</label>
+          <label htmlFor="password2" className="block text-[#014D49] font-bold mb-2">Confirme a Senha</label>
           <input
             type="password"
             id="password2"
@@ -90,12 +90,12 @@ const SignupPage = () => {
             className="bg-[#00995D] text-white font-bold py-3 px-8 rounded-full hover:bg-[#B1D14A] transition duration-300"
             disabled={isLoading}
           >
-            {isLoading ? 'Signing up...' : 'Sign Up'}
+            {isLoading ? 'Cadastrando...' : 'Cadastre-se'}
           </button>
         </div>
         {errorMessage && <p className="text-center mt-4 text-red-500">{errorMessage}</p>}
         <p className="text-center mt-4">
-          Already have an account? <Link to="/login" className="text-[#00995D] hover:underline">Login</Link>
+          Já tem uma conta? <Link to="/login" className="text-[#00995D] hover:underline">Entrar</Link>
         </p>
       </form>
     </div>

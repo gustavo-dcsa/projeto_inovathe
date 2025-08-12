@@ -75,7 +75,7 @@ const NewSubmitIdeaPage = () => {
       })
       .catch(error => {
         setIsSubmitting(false);
-        setSubmitMessage('There was an error submitting your idea. Please try again.');
+        setSubmitMessage('Ocorreu um erro ao enviar sua ideia. Por favor, tente novamente.');
         console.error('Error submitting idea:', error);
       });
   };
