@@ -2,6 +2,15 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from .models import Idea, User
+from django.db import IntegrityError
+
+class UserCreationTest(APITestCase):
+    def test_create_user_without_email_fails(self):
+        """
+        Ensure creating a user without an email raises a ValueError.
+        """
+        with self.assertRaises(ValueError):
+            User.objects.create_user(username='testuser', password='password', email='')
 
 class IdeaAPITest(APITestCase):
     def setUp(self):
@@ -127,3 +136,9 @@ class IdeaAPITest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['title'], self.idea1.title)
+
+    def test_database_connection_with_new_schema(self):
+        """
+        Ensure the database connection works with the new schema.
+        """
+        self.assertTrue(Idea.objects.exists())

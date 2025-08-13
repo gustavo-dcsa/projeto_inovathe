@@ -1,15 +1,27 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils import timezone
 import uuid
+
+class CustomUserManager(UserManager):
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        if not email:
+            raise ValueError('The Email field must be set')
+        email = self.normalize_email(email)
+        user = self.model(username=username, email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
 class User(AbstractUser):
     ROLE_CHOICES = (
         ('user', 'Usuário'),
         ('admin', 'Administrador'),
     )
-    email = models.EmailField(unique=True)
+    email = models.EmailField(unique=True, blank=False)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.username
