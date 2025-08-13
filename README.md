@@ -1,59 +1,131 @@
-# Idea Bank - Innovation Platform
+# O Projeto "Banco de Ideias"
 
-This is a full-featured web platform for innovation and idea management.
+O "Banco de Ideias" é uma plataforma de inovação projetada para otimizar o fluxo de trabalho e a especialização dentro da nossa organização. A plataforma permite que os colaboradores submetam, acompanhem e colaborem em ideias inovadoras, fomentando uma cultura de melhoria contínua e criatividade.
 
-## Project Overview
+## Tecnologias Utilizadas
 
-The "Idea Bank" is a platform designed to foster innovation by allowing users to submit, track, and collaborate on ideas. It features a modern, clean, and engaging user interface with a "bee and honeycomb" theme to represent cooperation and diligence.
+**Backend:**
+- Python 3.12
+- Django 5.2
+- Django REST Framework
+- dj-rest-auth
+- drf-spectacular (para documentação da API)
+- PostgreSQL
 
-### Features
+**Frontend:**
+- React 19
+- React Router
+- Axios
+- Tailwind CSS
 
--   **Idea Submission:** Anonymous and authenticated users can submit ideas through a simple form.
--   **Idea Tracking:** Users can track the status of their submitted ideas.
--   **Featured Ideas:** The home page displays a dynamic feed of the most liked or most recent approved ideas.
--   **User Authentication:** A full-featured authentication system allows users to sign up, log in, and manage their account.
--   **Admin Panel:** A comprehensive admin panel for managing ideas, users, and other platform content.
+## Como Executar o Projeto Localmente
 
-### Technology Stack
+Siga estas instruções para configurar e executar o projeto em seu ambiente de desenvolvimento local.
 
--   **Backend:** Python, Django, Django REST Framework
--   **Frontend:** React.js, Tailwind CSS
--   **Database:** PostgreSQL
+### Pré-requisitos
 
-## Getting Started
+- Python 3.12 ou superior
+- Node.js e npm
+- PostgreSQL
 
-### Prerequisites
+### Backend
 
--   Python 3.12+
--   Node.js and npm
--   PostgreSQL
+1.  **Clone o repositório:**
+    ```bash
+    git clone <url-do-repositorio>
+    cd <diretorio-do-projeto>/backend
+    ```
 
-### Backend Setup
+2.  **Crie e ative um ambiente virtual:**
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # No Windows, use `venv\Scripts\activate`
+    ```
 
-1.  Navigate to the `backend` directory: `cd backend`
-2.  Install Python dependencies: `pip install -r requirements.txt`
-3.  Set up your PostgreSQL database and configure the connection in `backend/idea_bank/settings.py`.
-4.  Apply database migrations: `python manage.py migrate`
-5.  Create a superuser to access the admin panel: `python manage.py createsuperuser`
-6.  Run the backend development server: `python manage.py runserver`
+3.  **Instale as dependências:**
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-### Frontend Setup
+4.  **Configure o banco de dados:**
+    - Certifique-se de que o PostgreSQL esteja em execução.
+    - Configure as credenciais do banco de dados no arquivo `backend/idea_bank/settings.py`.
 
-1.  Navigate to the `frontend` directory: `cd frontend`
-2.  Install Node.js dependencies: `npm install`
-3.  Run the frontend development server: `npm start`
+5.  **Aplique as migrações:**
+    ```bash
+    python manage.py migrate
+    ```
 
-The frontend will be available at `http://localhost:3000` and will proxy API requests to the backend at `http://localhost:8000`.
+6.  **Inicie o servidor de desenvolvimento:**
+    ```bash
+    python manage.py runserver
+    ```
+    O servidor backend estará disponível em `http://localhost:8000`.
 
-## Technical Improvement Backlog
+### Frontend
 
--   **Security:** Migrate from using `localStorage` for authentication tokens to using secure, `HttpOnly` cookies to better protect against Cross-Site Scripting (XSS) attacks.
--   **API Security:** The idea tracking endpoint should be secured to ensure that users can only view the details of ideas they have submitted (by validating the provided email against the idea's `submitted_by_email` field on the backend).
+1.  **Navegue até o diretório do frontend:**
+    ```bash
+    cd ../frontend
+    ```
 
-## Asset Credits
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
 
-The icons used in this project are from Flaticon. The design brief specified the following icons:
-- Bee Icon: `https://www.flaticon.com/br/icone-gratis/abelha_7352191`
-- Insect Icon: `https://www.flaticon.com/br/icone-gratis/inseto_12168378`
-- Honeycomb Icon: `https://www.flaticon.com/br/icone-gratis/caixa-de-abelha_12640713`
-Thank you to the creators of these icons.
+3.  **Inicie o servidor de desenvolvimento:**
+    ```bash
+    npm start
+    ```
+    A aplicação frontend estará disponível em `http://localhost:3000`.
+
+## Estrutura do Projeto
+
+```
+.
+├── backend/            # Contém todo o código do Django (servidor)
+│   ├── api/            # Aplicação Django para a API REST
+│   │   ├── migrations/ # Migrações do banco de dados
+│   │   ├── models.py   # Modelos de dados do Django
+│   │   ├── serializers.py # Serializers para os modelos
+│   │   ├── tests.py    # Testes para a API
+│   │   └── views.py    # Views da API (endpoints)
+│   ├── idea_bank/      # Configurações do projeto Django
+│   │   ├── settings.py # Configurações principais
+│   │   └── urls.py     # URLs principais do projeto
+│   └── manage.py       # Utilitário de linha de comando do Django
+├── frontend/           # Contém todo o código do React (cliente)
+│   ├── public/         # Arquivos públicos
+│   └── src/            # Código fonte do React
+│       ├── components/ # Componentes reutilizáveis
+│       ├── pages/      # Páginas da aplicação
+│       └── services/   # Lógica de comunicação com a API
+└── README.md           # Este arquivo
+```
+
+## Fluxo Principal da Aplicação (Diagrama)
+
+O diagrama a seguir ilustra o fluxo de submissão e acompanhamento de uma nova ideia.
+
+```mermaid
+sequenceDiagram
+    participant Usuário
+    participant Frontend
+    participant Backend (API)
+    participant Banco de Dados
+
+    Usuário->>Frontend: Preenche e envia o formulário de nova ideia
+    Frontend->>Backend (API): POST /api/ideas/ (com dados da ideia)
+    Backend (API)->>Banco de Dados: Cria um novo registro de ideia
+    Banco de Dados-->>Backend (API): Confirmação da criação
+    Backend (API)-->>Frontend: Resposta de sucesso (201 Created)
+    Frontend-->>Usuário: Exibe mensagem de sucesso
+
+    Usuário->>Frontend: Acessa a página de acompanhamento de ideias
+    Frontend->>Backend (API): GET /api/my-ideas/
+    Backend (API)->>Banco de Dados: Consulta as ideias do usuário
+    Banco de Dados-->>Backend (API): Retorna a lista de ideias
+    Backend (API)-->>Frontend: Retorna a lista de ideias em JSON
+    Frontend-->>Usuário: Exibe a lista de ideias submetidas
+```
