@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/ideas/'; // I'm using a relative URL, which will be proxied to the backend.
+const API_URL = 'http://127.0.0.1:8000/api/ideas/'; // I'm using a relative URL, which will be proxied to the backend.
 
 const getFeaturedIdeas = () => {
   // The backend will need to be updated to support this filtering.
@@ -16,8 +16,12 @@ const getFeaturedIdeas = () => {
   });
 };
 
-const submitIdea = (ideaData) => {
-  return axios.post(API_URL, ideaData);
+const submitIdea = (ideaData, token) => {
+  return axios.post(API_URL, ideaData, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
 };
 
 const getIdeaById = (ideaId, email) => {
