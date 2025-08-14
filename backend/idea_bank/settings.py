@@ -89,9 +89,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'idea_user',
+        'USER': 'gustavo_santos',
         'PASSWORD': 'Ferro-600',
-        'HOST': 'idea-bank.cw7ooq6yqbip.us-east-1.rds.amazonaws.com',
+        'HOST': 'idea-bank.cvy0c6c4wc5t.us-east-2.rds.amazonaws.com',
         'PORT': '5432',
         'OPTIONS': {
             'options': '-c search_path=idea-back,public'
@@ -150,7 +150,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
@@ -166,6 +166,24 @@ CORS_ALLOWED_ORIGINS = [
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-REST_AUTH_SERIALIZERS = {
-    'LOGIN_SERIALIZER': 'dj_rest_auth.serializers.LoginSerializer',
+# Allauth Configuration
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/admin/ideas/';
+const API_URL = '/api/admin/ideas/';
 
 const getAllIdeas = () => {
   return axios.get(API_URL);
