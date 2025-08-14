@@ -2,9 +2,13 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import OrderingFilter
 from .models import User, Idea, IdeaFeedback, IdeaLike, CalendarEvent, EventRsvp, NewsArticle
 from .serializers import UserSerializer, IdeaSerializer, IdeaFeedbackSerializer, IdeaLikeSerializer, CalendarEventSerializer, EventRsvpSerializer, NewsArticleSerializer
 from .permissions import IsAdminOrReadOnly
+from .filters import IdeaFilter
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 
@@ -25,7 +29,19 @@ class IdeaViewSet(viewsets.ModelViewSet):
     """
     queryset = Idea.objects.all()
     serializer_class = IdeaSerializer
+
     permission_classes = [AllowAny]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filterset_class = IdeaFilter
+    ordering_fields = ['created_at', 'likes']
+
+    def retrieve(self, request, *args, **kwargs):
+        idea = self.get_object()
+        email = request.query_params.get('email')
+        if email and idea.submitted_by_email != email:
+            raise PermissionDenied("Você não tem permissão para ver esta ideia.")
+        return super().retrieve(request, *args, **kwargs)
+
 
     @extend_schema(
         summary="Atualiza o status de uma ideia (somente admin)",

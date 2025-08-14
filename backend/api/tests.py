@@ -27,7 +27,8 @@ class IdeaAPITest(APITestCase):
             position="Developer",
             idea_category="Tecnologia",
             expected_benefits="Muitos beneficios",
-            user=self.user
+            user=self.user,
+            status='approved'
         )
         self.idea2 = Idea.objects.create(
             title="Test Idea 2",
@@ -39,7 +40,8 @@ class IdeaAPITest(APITestCase):
             department="TI",
             position="Developer",
             idea_category="Tecnologia",
-            expected_benefits="Muitos beneficios"
+            expected_benefits="Muitos beneficios",
+            is_featured=True
         )
 
     def test_create_idea(self):
@@ -82,6 +84,52 @@ class IdeaAPITest(APITestCase):
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['title'], self.idea1.title)
+
+    def test_retrieve_single_idea_with_correct_email(self):
+        """
+        Ensure we can retrieve a single idea with the correct email.
+        """
+        url = reverse('idea-detail', kwargs={'pk': self.idea1.pk})
+        response = self.client.get(url, {'email': 'test1@example.com'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['title'], self.idea1.title)
+
+    def test_retrieve_single_idea_with_incorrect_email(self):
+        """
+        Ensure we cannot retrieve a single idea with an incorrect email.
+        """
+        url = reverse('idea-detail', kwargs={'pk': self.idea1.pk})
+        response = self.client.get(url, {'email': 'wrong@example.com'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_filter_ideas_by_status(self):
+        """
+        Ensure we can filter ideas by status.
+        """
+        url = reverse('idea-list')
+        response = self.client.get(url, {'status': 'approved'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], self.idea1.title)
+
+    def test_filter_ideas_by_featured(self):
+        """
+        Ensure we can filter ideas by featured status.
+        """
+        url = reverse('idea-list')
+        response = self.client.get(url, {'is_featured': 'true'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['title'], self.idea2.title)
+
+    def test_order_ideas_by_created_at(self):
+        """
+        Ensure we can order ideas by creation date.
+        """
+        url = reverse('idea-list')
+        response = self.client.get(url, {'ordering': '-created_at'}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data[0]['title'], self.idea2.title)
 
     def test_update_idea_status_as_admin(self):
         """
