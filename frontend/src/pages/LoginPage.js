@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const { login, isLoading } = useAuth();
@@ -14,8 +14,8 @@ const LoginPage = () => {
     setErrorMessage('');
 
     try {
-      await login(email, password);
-      navigate('/'); // Redirect to home page on successful login
+      await login(identifier, password); // Envie o valor digitado
+      navigate('/');
     } catch (error) {
       setErrorMessage('Falha ao fazer login. Por favor, verifique suas credenciais.');
       console.error('Login error:', error);
@@ -27,12 +27,12 @@ const LoginPage = () => {
       <h1 className="text-3xl font-bold text-center mb-8 text-[#014D49]">Entrar</h1>
       <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
         <div className="mb-4">
-          <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">E-mail</label>
+          <label htmlFor="identifier" className="block text-[#014D49] font-bold mb-2">E-mail ou Usuário</label>
           <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            id="identifier"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
             className="w-full px-3 py-2 border rounded-lg"
             required
           />

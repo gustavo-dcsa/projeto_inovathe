@@ -8,6 +8,7 @@ from .permissions import IsAdminOrReadOnly
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 
+
 @extend_schema(tags=['Usuários'])
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -16,6 +17,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 @extend_schema(tags=['Ideias'])
 class IdeaViewSet(viewsets.ModelViewSet):
     """
@@ -23,7 +25,7 @@ class IdeaViewSet(viewsets.ModelViewSet):
     """
     queryset = Idea.objects.all()
     serializer_class = IdeaSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [AllowAny]
 
     @extend_schema(
         summary="Atualiza o status de uma ideia (somente admin)",
@@ -59,6 +61,7 @@ class IdeaViewSet(viewsets.ModelViewSet):
             return Response({'status': 'feedback added'})
         return Response({'error': 'Feedback text not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @extend_schema(tags=['Feedback de Ideias'])
 class IdeaFeedbackViewSet(viewsets.ModelViewSet):
     """
@@ -66,6 +69,7 @@ class IdeaFeedbackViewSet(viewsets.ModelViewSet):
     """
     queryset = IdeaFeedback.objects.all()
     serializer_class = IdeaFeedbackSerializer
+
 
 @extend_schema(tags=['Likes de Ideias'])
 class IdeaLikeViewSet(viewsets.ModelViewSet):
@@ -75,6 +79,7 @@ class IdeaLikeViewSet(viewsets.ModelViewSet):
     queryset = IdeaLike.objects.all()
     serializer_class = IdeaLikeSerializer
 
+
 @extend_schema(tags=['Eventos'])
 class CalendarEventViewSet(viewsets.ModelViewSet):
     """
@@ -82,6 +87,7 @@ class CalendarEventViewSet(viewsets.ModelViewSet):
     """
     queryset = CalendarEvent.objects.all()
     serializer_class = CalendarEventSerializer
+
 
 @extend_schema(tags=['RSVPs de Eventos'])
 class EventRsvpViewSet(viewsets.ModelViewSet):
@@ -91,6 +97,7 @@ class EventRsvpViewSet(viewsets.ModelViewSet):
     queryset = EventRsvp.objects.all()
     serializer_class = EventRsvpSerializer
 
+
 @extend_schema(tags=['Artigos de Notícias'])
 class NewsArticleViewSet(viewsets.ModelViewSet):
     """
@@ -98,6 +105,7 @@ class NewsArticleViewSet(viewsets.ModelViewSet):
     """
     queryset = NewsArticle.objects.all()
     serializer_class = NewsArticleSerializer
+
 
 @extend_schema(tags=['Minhas Ideias'])
 class MyIdeasViewSet(viewsets.ReadOnlyModelViewSet):
