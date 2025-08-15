@@ -89,9 +89,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'idea_user',
+        'USER': 'gustavo_santos',
         'PASSWORD': 'Ferro-600',
-        'HOST': 'idea-bank.cw7ooq6yqbip.us-east-1.rds.amazonaws.com',
+        'HOST': 'idea-bank.cvy0c6c4wc5t.us-east-2.rds.amazonaws.com',
         'PORT': '5432',
         'OPTIONS': {
             'options': '-c search_path=idea-back,public'
