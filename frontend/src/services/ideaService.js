@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/ideas/'; // I'm using a relative URL, which will be proxied to the backend.
+const API_URL = 'http://127.0.0.1:8000/api/ideas/'; // I'm using a relative URL, which will be proxied to the backend.
 
 const getFeaturedIdeas = () => {
   // The backend will need to be updated to support this filtering.
