@@ -13,3 +13,14 @@ class IsAdminOrReadOnly(BasePermission):
 
         # Write permissions are only allowed to admin users.
         return request.user and request.user.is_staff
+
+class AllowCreateAnyReadAuthenticated(BasePermission):
+    """
+    Custom permission to allow unauthenticated users to create an object.
+    Read access is allowed for authenticated users.
+    """
+
+    def has_permission(self, request, view):
+        if request.method == 'POST':
+            return True
+        return request.user and request.user.is_authenticated

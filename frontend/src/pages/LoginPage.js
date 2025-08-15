@@ -1,25 +1,32 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import authService from '../services/authService';
 
 const LoginPage = () => {
-  const [identifier, setIdentifier] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const { login, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     setErrorMessage('');
 
-    try {
-      await login(identifier, password); // Envie o valor digitado
-      navigate('/');
-    } catch (error) {
-      setErrorMessage('Falha ao fazer login. Por favor, verifique suas credenciais.');
-      console.error('Login error:', error);
-    }
+    authService.login(email, password)
+      .then(response => {
+        setIsLoading(false);
+        // Storing the token in local storage for now.
+        // A context-based solution would be better for a real app.
+        localStorage.setItem('token', response.data.key);
+        navigate('/'); // Redirect to home page on successful login
+      })
+      .catch(error => {
+        setIsLoading(false);
+        setErrorMessage('Falha ao fazer login. Por favor, verifique suas credenciais.');
+        console.error('Login error:', error);
+      });
   };
 
   return (
@@ -27,12 +34,12 @@ const LoginPage = () => {
       <h1 className="text-3xl font-bold text-center mb-8 text-[#014D49]">Entrar</h1>
       <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
         <div className="mb-4">
-          <label htmlFor="identifier" className="block text-[#014D49] font-bold mb-2">E-mail ou Usuário</label>
+          <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">E-mail</label>
           <input
-            type="text"
-            id="identifier"
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full px-3 py-2 border rounded-lg"
             required
           />

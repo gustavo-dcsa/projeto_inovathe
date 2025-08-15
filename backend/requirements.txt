@@ -7,6 +7,7 @@ django-filter==24.2
 djangorestframework==3.16.1
 drf-spectacular==0.27.2
 greenlet==3.2.3
+Pillow==10.4.0
 playwright==1.54.0
 psycopg2-binary==2.9.10
 pyee==13.0.0

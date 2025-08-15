@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import generics, permissions, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, AllowAny, IsAuthenticated
@@ -6,12 +6,11 @@ from rest_framework.exceptions import PermissionDenied
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from .models import User, Idea, IdeaFeedback, IdeaLike, CalendarEvent, EventRsvp, NewsArticle
-from .serializers import UserSerializer, IdeaSerializer, IdeaFeedbackSerializer, IdeaLikeSerializer, CalendarEventSerializer, EventRsvpSerializer, NewsArticleSerializer
-from .permissions import IsAdminOrReadOnly
+from .serializers import UserSerializer, IdeaSerializer, IdeaFeedbackSerializer, IdeaLikeSerializer, CalendarEventSerializer, EventRsvpSerializer, NewsArticleSerializer, UserProfileSerializer
+from .permissions import IsAdminOrReadOnly, AllowCreateAnyReadAuthenticated
 from .filters import IdeaFilter
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
-
 
 @extend_schema(tags=['Usuários'])
 class UserViewSet(viewsets.ModelViewSet):
@@ -20,7 +19,23 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
 
+    @extend_schema(
+        summary="Define o papel de um usuário (somente admin)",
+        description="Permite que um administrador defina o papel de um usuário específico.",
+        request=UserSerializer,
+        responses={200: UserSerializer}
+    )
+    @action(detail=True, methods=['patch'], permission_classes=[IsAdminUser])
+    def set_role(self, request, pk=None):
+        user = self.get_object()
+        new_role = request.data.get('role')
+        if new_role:
+            user.role = new_role
+            user.save()
+            return Response(self.get_serializer(user).data)
+        return Response({'error': 'Novo papel não fornecido'}, status=status.HTTP_400_BAD_REQUEST)
 
 @extend_schema(tags=['Ideias'])
 class IdeaViewSet(viewsets.ModelViewSet):
@@ -29,8 +44,7 @@ class IdeaViewSet(viewsets.ModelViewSet):
     """
     queryset = Idea.objects.all()
     serializer_class = IdeaSerializer
-
-    permission_classes = [AllowAny]
+    permission_classes = [AllowCreateAnyReadAuthenticated]
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = IdeaFilter
     ordering_fields = ['created_at', 'likes']
@@ -42,7 +56,6 @@ class IdeaViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("Você não tem permissão para ver esta ideia.")
         return super().retrieve(request, *args, **kwargs)
 
-
     @extend_schema(
         summary="Atualiza o status de uma ideia (somente admin)",
         description="Permite que um administrador atualize o status de uma ideia específica.",
@@ -52,8 +65,12 @@ class IdeaViewSet(viewsets.ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         idea = self.get_object()
         new_status = request.data.get('status')
+        new_stage = request.data.get('stage')
         if new_status:
             idea.status = new_status
+        if new_stage:
+            idea.stage = new_stage
+        if new_status or new_stage:
             idea.save()
             return Response(self.get_serializer(idea).data)
         return super().partial_update(request, *args, **kwargs)
@@ -77,7 +94,6 @@ class IdeaViewSet(viewsets.ModelViewSet):
             return Response({'status': 'feedback added'})
         return Response({'error': 'Feedback text not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
-
 @extend_schema(tags=['Feedback de Ideias'])
 class IdeaFeedbackViewSet(viewsets.ModelViewSet):
     """
@@ -85,7 +101,7 @@ class IdeaFeedbackViewSet(viewsets.ModelViewSet):
     """
     queryset = IdeaFeedback.objects.all()
     serializer_class = IdeaFeedbackSerializer
-
+    permission_classes = [IsAdminUser]
 
 @extend_schema(tags=['Likes de Ideias'])
 class IdeaLikeViewSet(viewsets.ModelViewSet):
@@ -94,7 +110,7 @@ class IdeaLikeViewSet(viewsets.ModelViewSet):
     """
     queryset = IdeaLike.objects.all()
     serializer_class = IdeaLikeSerializer
-
+    permission_classes = [IsAuthenticated]
 
 @extend_schema(tags=['Eventos'])
 class CalendarEventViewSet(viewsets.ModelViewSet):
@@ -103,7 +119,7 @@ class CalendarEventViewSet(viewsets.ModelViewSet):
     """
     queryset = CalendarEvent.objects.all()
     serializer_class = CalendarEventSerializer
-
+    permission_classes = [IsAdminUser]
 
 @extend_schema(tags=['RSVPs de Eventos'])
 class EventRsvpViewSet(viewsets.ModelViewSet):
@@ -112,7 +128,7 @@ class EventRsvpViewSet(viewsets.ModelViewSet):
     """
     queryset = EventRsvp.objects.all()
     serializer_class = EventRsvpSerializer
-
+    permission_classes = [IsAuthenticated]
 
 @extend_schema(tags=['Artigos de Notícias'])
 class NewsArticleViewSet(viewsets.ModelViewSet):
@@ -121,7 +137,7 @@ class NewsArticleViewSet(viewsets.ModelViewSet):
     """
     queryset = NewsArticle.objects.all()
     serializer_class = NewsArticleSerializer
-
+    permission_classes = [IsAdminUser]
 
 @extend_schema(tags=['Minhas Ideias'])
 class MyIdeasViewSet(viewsets.ReadOnlyModelViewSet):
@@ -133,3 +149,14 @@ class MyIdeasViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return Idea.objects.filter(user=self.request.user)
+
+@extend_schema(tags=['Meu Perfil'])
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    """
+    Provides GET and PATCH methods for the authenticated user's profile.
+    """
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user

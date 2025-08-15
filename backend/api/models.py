@@ -20,6 +20,9 @@ class User(AbstractUser):
     )
     email = models.EmailField(unique=True, blank=False)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
+    department = models.CharField(max_length=100, blank=True)
+    position = models.CharField(max_length=100, blank=True)
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
 
     objects = CustomUserManager()
 
@@ -31,11 +34,19 @@ def generate_idea_id():
 
 class Idea(models.Model):
     STATUS_CHOICES = (
-        ('submitted', 'Enviado'),
-        ('in_department_review', 'Em análise no departamento'),
-        ('in_committee_review', 'Em análise no comitê'),
+        ('pending', 'Pendente'),
+        ('in_analysis', 'Em Análise'),
+        ('re_evaluation', 'Em Reavaliação'),
         ('approved', 'Aprovado'),
         ('rejected', 'Rejeitado'),
+    )
+    STAGE_CHOICES = (
+        ('submitted', 'Submetido'),
+        ('innovation_sector', 'Setor de Inovação'),
+        ('responsible_manager', 'Gestor Responsável'),
+        ('innovation_committee', 'Comitê de Inovação'),
+        ('board_of_directors', 'Diretoria'),
+        ('projects', 'Projetos'),
         ('implemented', 'Implementado'),
     )
     SUBMISSION_TYPE_CHOICES = (
@@ -78,7 +89,8 @@ class Idea(models.Model):
     id = models.CharField(max_length=11, primary_key=True, default=generate_idea_id, editable=False)
     title = models.CharField(max_length=100) # Max length from form
     description = models.TextField()
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='submitted')
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
+    stage = models.CharField(max_length=50, choices=STAGE_CHOICES, default='submitted')
     submitted_by_email = models.EmailField()
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='ideas')
     created_at = models.DateTimeField(auto_now_add=True)
