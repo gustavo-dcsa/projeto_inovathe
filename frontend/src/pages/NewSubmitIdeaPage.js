@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import ideaService from '../services/ideaService';
 import SuccessAnimation from '../components/SuccessAnimation';
+import { useAuth } from '../context/AuthContext';
 
 const NewSubmitIdeaPage = () => {
+  const { user } = useAuth();
   const [showOverlay, setShowOverlay] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -91,7 +93,14 @@ const NewSubmitIdeaPage = () => {
             {/* Email */}
             <div className="mb-6">
               <label htmlFor="email" className="block text-[#014D49] font-bold mb-2">Email *</label>
-              <input type="email" name="email" id="email" value={formData.email} onChange={handleChange} className="w-full px-3 py-2 border rounded-lg" required />
+              <input
+                type="email"
+                value={user ? user.email : formData.email}
+                onChange={e => setFormData({ ...formData, email: e.target.value })}
+                disabled={!!user}
+                required
+                className="border px-3 py-2 w-full rounded-lg"
+              />
             </div>
 
             {/* Nome completo */}

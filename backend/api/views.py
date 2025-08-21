@@ -7,10 +7,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from .models import User, Idea, IdeaFeedback, IdeaLike, CalendarEvent, EventRsvp, NewsArticle
 from .serializers import UserSerializer, IdeaSerializer, IdeaFeedbackSerializer, IdeaLikeSerializer, CalendarEventSerializer, EventRsvpSerializer, NewsArticleSerializer, UserProfileSerializer
-from .permissions import IsAdminOrReadOnly, AllowCreateAnyReadAuthenticated
+from .permissions import IsAdminOrReadOnly,  AllowCreateAnyReadAuthenticated
 from .filters import IdeaFilter
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
+
 
 @extend_schema(tags=['Usuários'])
 class UserViewSet(viewsets.ModelViewSet):
@@ -36,6 +37,7 @@ class UserViewSet(viewsets.ModelViewSet):
             user.save()
             return Response(self.get_serializer(user).data)
         return Response({'error': 'Novo papel não fornecido'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema(tags=['Ideias'])
 class IdeaViewSet(viewsets.ModelViewSet):
@@ -94,6 +96,7 @@ class IdeaViewSet(viewsets.ModelViewSet):
             return Response({'status': 'feedback added'})
         return Response({'error': 'Feedback text not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @extend_schema(tags=['Feedback de Ideias'])
 class IdeaFeedbackViewSet(viewsets.ModelViewSet):
     """
@@ -102,6 +105,7 @@ class IdeaFeedbackViewSet(viewsets.ModelViewSet):
     queryset = IdeaFeedback.objects.all()
     serializer_class = IdeaFeedbackSerializer
     permission_classes = [IsAdminUser]
+
 
 @extend_schema(tags=['Likes de Ideias'])
 class IdeaLikeViewSet(viewsets.ModelViewSet):
@@ -112,6 +116,7 @@ class IdeaLikeViewSet(viewsets.ModelViewSet):
     serializer_class = IdeaLikeSerializer
     permission_classes = [IsAuthenticated]
 
+
 @extend_schema(tags=['Eventos'])
 class CalendarEventViewSet(viewsets.ModelViewSet):
     """
@@ -120,6 +125,7 @@ class CalendarEventViewSet(viewsets.ModelViewSet):
     queryset = CalendarEvent.objects.all()
     serializer_class = CalendarEventSerializer
     permission_classes = [IsAdminUser]
+
 
 @extend_schema(tags=['RSVPs de Eventos'])
 class EventRsvpViewSet(viewsets.ModelViewSet):
@@ -130,6 +136,7 @@ class EventRsvpViewSet(viewsets.ModelViewSet):
     serializer_class = EventRsvpSerializer
     permission_classes = [IsAuthenticated]
 
+
 @extend_schema(tags=['Artigos de Notícias'])
 class NewsArticleViewSet(viewsets.ModelViewSet):
     """
@@ -138,6 +145,7 @@ class NewsArticleViewSet(viewsets.ModelViewSet):
     queryset = NewsArticle.objects.all()
     serializer_class = NewsArticleSerializer
     permission_classes = [IsAdminUser]
+
 
 @extend_schema(tags=['Minhas Ideias'])
 class MyIdeasViewSet(viewsets.ReadOnlyModelViewSet):
@@ -149,6 +157,7 @@ class MyIdeasViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return Idea.objects.filter(user=self.request.user)
+
 
 @extend_schema(tags=['Meu Perfil'])
 class UserProfileView(generics.RetrieveUpdateAPIView):

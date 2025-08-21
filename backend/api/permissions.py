@@ -1,5 +1,6 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
+
 class IsAdminOrReadOnly(BasePermission):
     """
     Custom permission to only allow admin users to edit an object.
@@ -14,6 +15,7 @@ class IsAdminOrReadOnly(BasePermission):
         # Write permissions are only allowed to admin users.
         return request.user and request.user.is_staff
 
+
 class AllowCreateAnyReadAuthenticated(BasePermission):
     """
     Custom permission to allow unauthenticated users to create an object.
@@ -21,6 +23,6 @@ class AllowCreateAnyReadAuthenticated(BasePermission):
     """
 
     def has_permission(self, request, view):
-        if request.method == 'POST':
+        if request.method in ['POST', 'GET']:
             return True
         return request.user and request.user.is_authenticated
