@@ -11,11 +11,12 @@ const signup = (username, email, password, password2) => {
   });
 };
 
-const login = (email, password) => {
-  return axios.post(API_URL + 'login/', {
-    email,
-    password,
-  });
+const login = (identifier, password) => {
+  const isEmail = identifier.includes('@');
+  const payload = isEmail
+    ? { email: identifier, password }
+    : { username: identifier, password };
+  return axios.post(API_URL + 'login/', payload);
 };
 
 const logout = () => {

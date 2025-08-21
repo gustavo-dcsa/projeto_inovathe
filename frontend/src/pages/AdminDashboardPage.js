@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import adminIdeaService from '../services/adminIdeaService';
+import { useAuth } from '../context/AuthContext';
 
 const AdminDashboardPage = () => {
+  const { user } = useAuth();
   const [ideas, setIdeas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -19,6 +21,10 @@ const AdminDashboardPage = () => {
         console.error('Error fetching ideas:', error);
       });
   }, []);
+
+  if (!user || user.role !== 'admin') {
+    return <div>Acesso restrito. Faça login como administrador.</div>;
+  }
 
   // Handlers for admin actions will go here
 

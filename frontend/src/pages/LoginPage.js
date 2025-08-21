@@ -20,7 +20,7 @@ const LoginPage = () => {
         // Storing the token in local storage for now.
         // A context-based solution would be better for a real app.
         localStorage.setItem('token', response.data.key);
-        navigate('/'); // Redirect to home page on successful login
+        navigate(response.data.user.role === 'admin' ? '/admin' : '/users/me'); // Redirect based on user role
       })
       .catch(error => {
         setIsLoading(false);

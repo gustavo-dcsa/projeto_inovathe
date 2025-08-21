@@ -3,15 +3,18 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils import timezone
 import uuid
 
+
 class CustomUserManager(UserManager):
-    def create_user(self, username, email=None, password=None, **extra_fields):
+    def create_user(self, username, email, password=None, **extra_fields):
         if not email:
-            raise ValueError('The Email field must be set')
+            raise ValueError('O campo email é obrigatório')
         email = self.normalize_email(email)
+        extra_fields.setdefault('is_active', True)
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-        return user
+        return super().create_user(username, email, password, **extra_fields)
+
 
 class User(AbstractUser):
     ROLE_CHOICES = (
@@ -19,7 +22,7 @@ class User(AbstractUser):
         ('admin', 'Administrador'),
     )
     email = models.EmailField(unique=True, blank=False)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
     department = models.CharField(max_length=100, blank=True)
     position = models.CharField(max_length=100, blank=True)
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
@@ -29,8 +32,10 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+
 def generate_idea_id():
     return f"idea-{uuid.uuid4().hex[:6]}"
+
 
 class Idea(models.Model):
     STATUS_CHOICES = (
@@ -87,7 +92,7 @@ class Idea(models.Model):
 
     # Existing fields
     id = models.CharField(max_length=11, primary_key=True, default=generate_idea_id, editable=False)
-    title = models.CharField(max_length=100) # Max length from form
+    title = models.CharField(max_length=100)  # Max length from form
     description = models.TextField()
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
     stage = models.CharField(max_length=50, choices=STAGE_CHOICES, default='submitted')
@@ -114,9 +119,9 @@ class Idea(models.Model):
     is_featured = models.BooleanField(default=False)
     current_location = models.CharField(max_length=255, blank=True, null=True)
 
-
     def __str__(self):
         return self.title
+
 
 class IdeaFeedback(models.Model):
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE, related_name='feedback')
@@ -127,12 +132,14 @@ class IdeaFeedback(models.Model):
     def __str__(self):
         return f"Feedback for {self.idea.title} by {self.author.username}"
 
+
 class IdeaLike(models.Model):
     idea = models.ForeignKey(Idea, on_delete=models.CASCADE, related_name='likes')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='likes')
 
     class Meta:
         unique_together = ('idea', 'user')
+
 
 class CalendarEvent(models.Model):
     title = models.CharField(max_length=255)
@@ -144,12 +151,14 @@ class CalendarEvent(models.Model):
     def __str__(self):
         return self.title
 
+
 class EventRsvp(models.Model):
     event = models.ForeignKey(CalendarEvent, on_delete=models.CASCADE, related_name='rsvps')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rsvps')
 
     class Meta:
         unique_together = ('event', 'user')
+
 
 class NewsArticle(models.Model):
     title = models.CharField(max_length=255)
