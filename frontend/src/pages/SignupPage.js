@@ -26,7 +26,8 @@ const SignupPage = () => {
         // After successful signup, dj-rest-auth sends back a key
         // so we can log the user in directly.
         localStorage.setItem('token', response.data.key);
-        navigate('/'); // Redirect to home page
+        const user = response.data.user; // Assuming the user info is in the response
+        navigate(user.role === 'admin' ? '/admin' : '/users/me');
       })
       .catch(error => {
         setIsLoading(false);
