@@ -22,3 +22,4 @@ package-lock.json
 # OS-specific
 .DS_Store
 Thumbs.db
+backend/idea_bank/.env
