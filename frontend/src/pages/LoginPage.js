@@ -17,10 +17,11 @@ const LoginPage = () => {
     authService.login(email, password)
       .then(response => {
         setIsLoading(false);
-        // Storing the token in local storage for now.
-        // A context-based solution would be better for a real app.
+        // CORREÇÃO: A resposta do dj-rest-auth tem o token na raiz
+        // e os detalhes do usuário em um objeto 'user'.
         localStorage.setItem('token', response.data.key);
-        navigate(response.data.user.role === 'admin' ? '/admin' : '/users/me'); // Redirect based on user role
+        const user = response.data.user; // Acessa o objeto user aninhado
+        navigate(user.role === 'admin' ? '/admin' : '/users/me');
       })
       .catch(error => {
         setIsLoading(false);
