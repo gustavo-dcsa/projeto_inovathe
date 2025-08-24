@@ -11,6 +11,10 @@ from .permissions import IsAdminOrReadOnly,  AllowCreateAnyReadAuthenticated
 from .filters import IdeaFilter
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from dj_rest_auth.views import LoginView
+from django.contrib.auth import login as django_login
+from .serializers import CustomLoginSerializer
 
 
 @extend_schema(tags=['Usuários'])
@@ -166,6 +170,33 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     """
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
+    # força explicitamente autenticação por Token e por Session (útil em dev/tests)
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
 
     def get_object(self):
         return self.request.user
+
+
+class CustomLoginView(LoginView):
+    """
+    Override do LoginView para garantir que `self.user.backend` exista
+    antes de qualquer chamada a django_login(...)
+    """
+    serializer_class = CustomLoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        # valida o payload e coloca self.user para o fluxo do parent
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # o serializer do dj-rest-auth deve definir serializer.user
+        self.user = getattr(serializer, 'user', None)
+        if not self.user:
+            # se não achou user, permite o fluxo normal (vai falhar depois com credenciais inválidas)
+            return super().post(request, *args, **kwargs)
+
+        # Define explicitamente o backend no objeto user, para evitar ValueError
+        # Ajuste para o backend que você usa — esse é o do allauth
+        self.user.backend = 'allauth.account.auth_backends.AuthenticationBackend'
+
+        # Agora chama o fluxo padrão — como self.user já tem backend, django_login() funciona.
+        return super().post(request, *args, **kwargs)

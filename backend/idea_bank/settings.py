@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
     "rest_framework",
     "rest_framework.authtoken",
     "dj_rest_auth",
@@ -155,28 +156,50 @@ SITE_ID = 1
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
+    # Backend do django-allauth — necessário para login via email/username
     'allauth.account.auth_backends.AuthenticationBackend',
+
+    # Backend padrão do Django (opcional, mas geralmente recomendado)
     'django.contrib.auth.backends.ModelBackend',
-)
+]
+
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# Allauth Configuration
+ACCOUNT_SIGNUP_FIELDS = ['username', 'email']
+ACCOUNT_AUTHENTICATION_METHOD = "email"  # ou "username" ou "username_email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_ADAPTER = 'api.adapters.CustomAccountAdapter'
+
+# Esta linha resolve os avisos de depreciação e conflitos
+ACCOUNT_SIGNUP_FIELDS = ['username', 'email']
+
+# Remova a linha ACCOUNT_LOGIN_METHODS se ela existir
+
+
+REST_AUTH_SERIALIZERS = {
+    'LOGIN_SERIALIZER': 'api.serializers.CustomLoginSerializer',
+}
+
 
 LOGGING = {
     'version': 1,
