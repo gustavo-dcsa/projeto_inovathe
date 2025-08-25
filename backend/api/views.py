@@ -7,10 +7,15 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter
 from .models import User, Idea, IdeaFeedback, IdeaLike, CalendarEvent, EventRsvp, NewsArticle
 from .serializers import UserSerializer, IdeaSerializer, IdeaFeedbackSerializer, IdeaLikeSerializer, CalendarEventSerializer, EventRsvpSerializer, NewsArticleSerializer, UserProfileSerializer
-from .permissions import IsAdminOrReadOnly, AllowCreateAnyReadAuthenticated
+from .permissions import IsAdminOrReadOnly,  AllowCreateAnyReadAuthenticated
 from .filters import IdeaFilter
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from dj_rest_auth.views import LoginView
+from django.contrib.auth import login as django_login
+from .serializers import CustomLoginSerializer
+
 
 @extend_schema(tags=['Usuários'])
 class UserViewSet(viewsets.ModelViewSet):
@@ -36,6 +41,7 @@ class UserViewSet(viewsets.ModelViewSet):
             user.save()
             return Response(self.get_serializer(user).data)
         return Response({'error': 'Novo papel não fornecido'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema(tags=['Ideias'])
 class IdeaViewSet(viewsets.ModelViewSet):
@@ -94,6 +100,7 @@ class IdeaViewSet(viewsets.ModelViewSet):
             return Response({'status': 'feedback added'})
         return Response({'error': 'Feedback text not provided'}, status=status.HTTP_400_BAD_REQUEST)
 
+
 @extend_schema(tags=['Feedback de Ideias'])
 class IdeaFeedbackViewSet(viewsets.ModelViewSet):
     """
@@ -102,6 +109,7 @@ class IdeaFeedbackViewSet(viewsets.ModelViewSet):
     queryset = IdeaFeedback.objects.all()
     serializer_class = IdeaFeedbackSerializer
     permission_classes = [IsAdminUser]
+
 
 @extend_schema(tags=['Likes de Ideias'])
 class IdeaLikeViewSet(viewsets.ModelViewSet):
@@ -112,6 +120,7 @@ class IdeaLikeViewSet(viewsets.ModelViewSet):
     serializer_class = IdeaLikeSerializer
     permission_classes = [IsAuthenticated]
 
+
 @extend_schema(tags=['Eventos'])
 class CalendarEventViewSet(viewsets.ModelViewSet):
     """
@@ -120,6 +129,7 @@ class CalendarEventViewSet(viewsets.ModelViewSet):
     queryset = CalendarEvent.objects.all()
     serializer_class = CalendarEventSerializer
     permission_classes = [IsAdminUser]
+
 
 @extend_schema(tags=['RSVPs de Eventos'])
 class EventRsvpViewSet(viewsets.ModelViewSet):
@@ -130,6 +140,7 @@ class EventRsvpViewSet(viewsets.ModelViewSet):
     serializer_class = EventRsvpSerializer
     permission_classes = [IsAuthenticated]
 
+
 @extend_schema(tags=['Artigos de Notícias'])
 class NewsArticleViewSet(viewsets.ModelViewSet):
     """
@@ -138,6 +149,7 @@ class NewsArticleViewSet(viewsets.ModelViewSet):
     queryset = NewsArticle.objects.all()
     serializer_class = NewsArticleSerializer
     permission_classes = [IsAdminUser]
+
 
 @extend_schema(tags=['Minhas Ideias'])
 class MyIdeasViewSet(viewsets.ReadOnlyModelViewSet):
@@ -150,6 +162,7 @@ class MyIdeasViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         return Idea.objects.filter(user=self.request.user)
 
+
 @extend_schema(tags=['Meu Perfil'])
 class UserProfileView(generics.RetrieveUpdateAPIView):
     """
@@ -157,6 +170,33 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
     """
     serializer_class = UserProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
+    # força explicitamente autenticação por Token e por Session (útil em dev/tests)
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
 
     def get_object(self):
         return self.request.user
+
+
+class CustomLoginView(LoginView):
+    """
+    Override do LoginView para garantir que `self.user.backend` exista
+    antes de qualquer chamada a django_login(...)
+    """
+    serializer_class = CustomLoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        # valida o payload e coloca self.user para o fluxo do parent
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # o serializer do dj-rest-auth deve definir serializer.user
+        self.user = getattr(serializer, 'user', None)
+        if not self.user:
+            # se não achou user, permite o fluxo normal (vai falhar depois com credenciais inválidas)
+            return super().post(request, *args, **kwargs)
+
+        # Define explicitamente o backend no objeto user, para evitar ValueError
+        # Ajuste para o backend que você usa — esse é o do allauth
+        self.user.backend = 'allauth.account.auth_backends.AuthenticationBackend'
+
+        # Agora chama o fluxo padrão — como self.user já tem backend, django_login() funciona.
+        return super().post(request, *args, **kwargs)

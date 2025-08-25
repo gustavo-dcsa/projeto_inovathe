@@ -23,10 +23,10 @@ const SignupPage = () => {
     authService.signup(username, email, password, password2)
       .then(response => {
         setIsLoading(false);
-        // After successful signup, dj-rest-auth sends back a key
-        // so we can log the user in directly.
+        // CORREÇÃO: A estrutura da resposta no signup é a mesma.
         localStorage.setItem('token', response.data.key);
-        navigate('/'); // Redirect to home page
+        const user = response.data.user; // Acessa o objeto user aninhado
+        navigate(user.role === 'admin' ? '/admin' : '/users/me');
       })
       .catch(error => {
         setIsLoading(false);

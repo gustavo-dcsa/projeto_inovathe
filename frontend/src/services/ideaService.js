@@ -16,12 +16,8 @@ const getFeaturedIdeas = () => {
   });
 };
 
-const submitIdea = (ideaData, token) => {
-  return axios.post(API_URL, ideaData, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+const submitIdea = (ideaData) => {
+  return axios.post(API_URL, ideaData);
 };
 
 const getIdeaById = (ideaId, email) => {

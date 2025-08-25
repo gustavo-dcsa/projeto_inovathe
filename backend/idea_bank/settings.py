@@ -9,12 +9,18 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DEBUG = os.getenv("DEBUG", "False") == "True"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -37,12 +43,14 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
     "rest_framework",
     "rest_framework.authtoken",
     "dj_rest_auth",
     "dj_rest_auth.registration",
     "allauth",
     "allauth.account",
+    "django.contrib.sites",
     "allauth.socialaccount",
     "api",
     "corsheaders",
@@ -87,12 +95,12 @@ WSGI_APPLICATION = "idea_bank.wsgi.application"
 # TODO: Move secrets to environment variables before deployment
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'idea_user',
-        'PASSWORD': 'Ferro-600',
-        'HOST': 'idea-bank.cw7ooq6yqbip.us-east-1.rds.amazonaws.com',
-        'PORT': '5432',
+        "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.environ.get("DB_NAME", "postgres"),
+        "USER": os.environ.get("DB_USER", "postgres"),
+        "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+        "HOST": os.environ.get("DB_HOST", "localhost"),
+        "PORT": os.environ.get("DB_PORT", "5432"),
         'OPTIONS': {
             'options': '-c search_path=idea-back,public'
         }
@@ -148,26 +156,50 @@ SITE_ID = 1
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-AUTHENTICATION_BACKENDS = (
+CORS_ALLOW_ALL_ORIGINS = True
+
+AUTHENTICATION_BACKENDS = [
+    # Backend do django-allauth — necessário para login via email/username
     'allauth.account.auth_backends.AuthenticationBackend',
+
+    # Backend padrão do Django (opcional, mas geralmente recomendado)
     'django.contrib.auth.backends.ModelBackend',
-)
+]
+
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-# Allauth Configuration
+ACCOUNT_SIGNUP_FIELDS = ['username', 'email']
+ACCOUNT_AUTHENTICATION_METHOD = "email"  # ou "username" ou "username_email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_ADAPTER = 'api.adapters.CustomAccountAdapter'
+
+# Esta linha resolve os avisos de depreciação e conflitos
+ACCOUNT_SIGNUP_FIELDS = ['username', 'email']
+
+# Remova a linha ACCOUNT_LOGIN_METHODS se ela existir
+
+
+REST_AUTH_SERIALIZERS = {
+    'LOGIN_SERIALIZER': 'api.serializers.CustomLoginSerializer',
+}
+
 
 LOGGING = {
     'version': 1,

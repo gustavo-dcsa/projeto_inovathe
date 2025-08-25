@@ -12,12 +12,10 @@ const signup = (username, email, password, password2) => {
 };
 
 const login = (identifier, password) => {
-  // Se for e-mail, envie só email; se for username, envie só username
   const isEmail = identifier.includes('@');
   const payload = isEmail
     ? { email: identifier, password }
     : { username: identifier, password };
-
   return axios.post(API_URL + 'login/', payload);
 };
 
