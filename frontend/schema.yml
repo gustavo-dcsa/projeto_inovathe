@@ -1,0 +1,2489 @@
+openapi: 3.0.3
+info:
+  title: ''
+  version: 0.0.0
+paths:
+  /api/auth/login/:
+    post:
+      operationId: api_auth_login_create
+      description: |-
+        Check the credentials and return the REST Token
+        if the credentials are valid and authenticated.
+        Calls Django Auth login method to register User ID
+        in Django session framework
+
+        Accept the following POST parameters: username, password
+        Return the REST Framework Token Object's key.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: ''
+  /api/auth/logout/:
+    post:
+      operationId: api_auth_logout_create
+      description: |-
+        Calls Django logout method and delete the Token object
+        assigned to the current User object.
+
+        Accepts/Returns nothing.
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/auth/password/change/:
+    post:
+      operationId: api_auth_password_change_create
+      description: |-
+        Calls Django Auth SetPasswordForm save method.
+
+        Accepts the following POST parameters: new_password1, new_password2
+        Returns the success/fail message.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/auth/password/reset/:
+    post:
+      operationId: api_auth_password_reset_create
+      description: |-
+        Calls Django Auth PasswordResetForm save method.
+
+        Accepts the following POST parameters: email
+        Returns the success/fail message.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/auth/password/reset/confirm/:
+    post:
+      operationId: api_auth_password_reset_confirm_create
+      description: |-
+        Password reset e-mail link is confirmed, therefore
+        this resets the user's password.
+
+        Accepts the following POST parameters: token, uid,
+            new_password1, new_password2
+        Returns the success/fail message.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/auth/registration/:
+    post:
+      operationId: api_auth_registration_create
+      description: |-
+        Registers a new user.
+
+        Accepts the following POST parameters: username, email, password1, password2.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+          description: ''
+  /api/auth/registration/resend-email/:
+    post:
+      operationId: api_auth_registration_resend_email_create
+      description: |-
+        Resends another email to an unverified email.
+
+        Accepts the following POST parameter: email.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerification'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerification'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResendEmailVerification'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/auth/registration/verify-email/:
+    post:
+      operationId: api_auth_registration_verify_email_create
+      description: |-
+        Verifies the email associated with the provided key.
+
+        Accepts the following POST parameter: key.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VerifyEmail'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestAuthDetail'
+          description: ''
+  /api/auth/user/:
+    get:
+      operationId: api_auth_user_retrieve
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+    put:
+      operationId: api_auth_user_update
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+    patch:
+      operationId: api_auth_user_partial_update
+      description: |-
+        Reads and updates UserModel fields
+        Accepts GET, PUT, PATCH methods.
+
+        Default accepted fields: username, first_name, last_name
+        Default display fields: pk, username, email, first_name, last_name
+        Read-only fields: pk, email
+
+        Returns UserModel fields.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserDetails'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+  /api/events/:
+    get:
+      operationId: api_events_list
+      description: ViewSet para gerenciar eventos do calendário.
+      tags:
+      - Eventos
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CalendarEvent'
+          description: ''
+    post:
+      operationId: api_events_create
+      description: ViewSet para gerenciar eventos do calendário.
+      tags:
+      - Eventos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalendarEvent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CalendarEvent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CalendarEvent'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+          description: ''
+  /api/events/{id}/:
+    get:
+      operationId: api_events_retrieve
+      description: ViewSet para gerenciar eventos do calendário.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this calendar event.
+        required: true
+      tags:
+      - Eventos
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+          description: ''
+    put:
+      operationId: api_events_update
+      description: ViewSet para gerenciar eventos do calendário.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this calendar event.
+        required: true
+      tags:
+      - Eventos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CalendarEvent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CalendarEvent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CalendarEvent'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+          description: ''
+    patch:
+      operationId: api_events_partial_update
+      description: ViewSet para gerenciar eventos do calendário.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this calendar event.
+        required: true
+      tags:
+      - Eventos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCalendarEvent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCalendarEvent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCalendarEvent'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarEvent'
+          description: ''
+    delete:
+      operationId: api_events_destroy
+      description: ViewSet para gerenciar eventos do calendário.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this calendar event.
+        required: true
+      tags:
+      - Eventos
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/feedback/:
+    get:
+      operationId: api_feedback_list
+      description: ViewSet para gerenciar feedbacks de ideias.
+      tags:
+      - Feedback de Ideias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IdeaFeedback'
+          description: ''
+    post:
+      operationId: api_feedback_create
+      description: ViewSet para gerenciar feedbacks de ideias.
+      tags:
+      - Feedback de Ideias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdeaFeedback'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IdeaFeedback'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IdeaFeedback'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaFeedback'
+          description: ''
+  /api/feedback/{id}/:
+    get:
+      operationId: api_feedback_retrieve
+      description: ViewSet para gerenciar feedbacks de ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this idea feedback.
+        required: true
+      tags:
+      - Feedback de Ideias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaFeedback'
+          description: ''
+    put:
+      operationId: api_feedback_update
+      description: ViewSet para gerenciar feedbacks de ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this idea feedback.
+        required: true
+      tags:
+      - Feedback de Ideias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdeaFeedback'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IdeaFeedback'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IdeaFeedback'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaFeedback'
+          description: ''
+    patch:
+      operationId: api_feedback_partial_update
+      description: ViewSet para gerenciar feedbacks de ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this idea feedback.
+        required: true
+      tags:
+      - Feedback de Ideias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedIdeaFeedback'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedIdeaFeedback'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedIdeaFeedback'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaFeedback'
+          description: ''
+    delete:
+      operationId: api_feedback_destroy
+      description: ViewSet para gerenciar feedbacks de ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this idea feedback.
+        required: true
+      tags:
+      - Feedback de Ideias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/ideas/:
+    get:
+      operationId: api_ideas_list
+      description: ViewSet para gerenciar ideias.
+      parameters:
+      - in: query
+        name: is_featured
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - approved
+          - in_analysis
+          - pending
+          - re_evaluation
+          - rejected
+        description: |-
+          * `pending` - Pendente
+          * `in_analysis` - Em Análise
+          * `re_evaluation` - Em Reavaliação
+          * `approved` - Aprovado
+          * `rejected` - Rejeitado
+      tags:
+      - Ideias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Idea'
+          description: ''
+    post:
+      operationId: api_ideas_create
+      description: ViewSet para gerenciar ideias.
+      tags:
+      - Ideias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Idea'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Idea'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Idea'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Idea'
+          description: ''
+  /api/ideas/{id}/:
+    get:
+      operationId: api_ideas_retrieve
+      description: ViewSet para gerenciar ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this idea.
+        required: true
+      tags:
+      - Ideias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Idea'
+          description: ''
+    put:
+      operationId: api_ideas_update
+      description: ViewSet para gerenciar ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this idea.
+        required: true
+      tags:
+      - Ideias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Idea'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Idea'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Idea'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Idea'
+          description: ''
+    patch:
+      operationId: api_ideas_partial_update
+      description: Permite que um administrador atualize o status de uma ideia específica.
+      summary: Atualiza o status de uma ideia (somente admin)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this idea.
+        required: true
+      tags:
+      - Ideias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedIdea'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedIdea'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedIdea'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Idea'
+          description: ''
+    delete:
+      operationId: api_ideas_destroy
+      description: ViewSet para gerenciar ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this idea.
+        required: true
+      tags:
+      - Ideias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/ideas/{id}/feedback/:
+    post:
+      operationId: api_ideas_feedback_create
+      description: Permite que um administrador adicione um feedback a uma ideia específica.
+      summary: Adiciona feedback a uma ideia (somente admin)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this idea.
+        required: true
+      tags:
+      - Ideias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdeaFeedback'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IdeaFeedback'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IdeaFeedback'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/likes/:
+    get:
+      operationId: api_likes_list
+      description: ViewSet para gerenciar likes em ideias.
+      tags:
+      - Likes de Ideias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IdeaLike'
+          description: ''
+    post:
+      operationId: api_likes_create
+      description: ViewSet para gerenciar likes em ideias.
+      tags:
+      - Likes de Ideias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdeaLike'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IdeaLike'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IdeaLike'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaLike'
+          description: ''
+  /api/likes/{id}/:
+    get:
+      operationId: api_likes_retrieve
+      description: ViewSet para gerenciar likes em ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this idea like.
+        required: true
+      tags:
+      - Likes de Ideias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaLike'
+          description: ''
+    put:
+      operationId: api_likes_update
+      description: ViewSet para gerenciar likes em ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this idea like.
+        required: true
+      tags:
+      - Likes de Ideias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IdeaLike'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/IdeaLike'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/IdeaLike'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaLike'
+          description: ''
+    patch:
+      operationId: api_likes_partial_update
+      description: ViewSet para gerenciar likes em ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this idea like.
+        required: true
+      tags:
+      - Likes de Ideias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedIdeaLike'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedIdeaLike'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedIdeaLike'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdeaLike'
+          description: ''
+    delete:
+      operationId: api_likes_destroy
+      description: ViewSet para gerenciar likes em ideias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this idea like.
+        required: true
+      tags:
+      - Likes de Ideias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/my-ideas/:
+    get:
+      operationId: api_my_ideas_list
+      description: ViewSet para listar as ideias do usuário autenticado.
+      tags:
+      - Minhas Ideias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Idea'
+          description: ''
+  /api/news/:
+    get:
+      operationId: api_news_list
+      description: ViewSet para gerenciar artigos de notícias.
+      tags:
+      - Artigos de Notícias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewsArticle'
+          description: ''
+    post:
+      operationId: api_news_create
+      description: ViewSet para gerenciar artigos de notícias.
+      tags:
+      - Artigos de Notícias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsArticle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewsArticle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NewsArticle'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsArticle'
+          description: ''
+  /api/news/{id}/:
+    get:
+      operationId: api_news_retrieve
+      description: ViewSet para gerenciar artigos de notícias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this news article.
+        required: true
+      tags:
+      - Artigos de Notícias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsArticle'
+          description: ''
+    put:
+      operationId: api_news_update
+      description: ViewSet para gerenciar artigos de notícias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this news article.
+        required: true
+      tags:
+      - Artigos de Notícias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsArticle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewsArticle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NewsArticle'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsArticle'
+          description: ''
+    patch:
+      operationId: api_news_partial_update
+      description: ViewSet para gerenciar artigos de notícias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this news article.
+        required: true
+      tags:
+      - Artigos de Notícias
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsArticle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsArticle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsArticle'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsArticle'
+          description: ''
+    delete:
+      operationId: api_news_destroy
+      description: ViewSet para gerenciar artigos de notícias.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this news article.
+        required: true
+      tags:
+      - Artigos de Notícias
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/rsvps/:
+    get:
+      operationId: api_rsvps_list
+      description: ViewSet para gerenciar RSVPs em eventos.
+      tags:
+      - RSVPs de Eventos
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EventRsvp'
+          description: ''
+    post:
+      operationId: api_rsvps_create
+      description: ViewSet para gerenciar RSVPs em eventos.
+      tags:
+      - RSVPs de Eventos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRsvp'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventRsvp'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventRsvp'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRsvp'
+          description: ''
+  /api/rsvps/{id}/:
+    get:
+      operationId: api_rsvps_retrieve
+      description: ViewSet para gerenciar RSVPs em eventos.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this event rsvp.
+        required: true
+      tags:
+      - RSVPs de Eventos
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRsvp'
+          description: ''
+    put:
+      operationId: api_rsvps_update
+      description: ViewSet para gerenciar RSVPs em eventos.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this event rsvp.
+        required: true
+      tags:
+      - RSVPs de Eventos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRsvp'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventRsvp'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventRsvp'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRsvp'
+          description: ''
+    patch:
+      operationId: api_rsvps_partial_update
+      description: ViewSet para gerenciar RSVPs em eventos.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this event rsvp.
+        required: true
+      tags:
+      - RSVPs de Eventos
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEventRsvp'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEventRsvp'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEventRsvp'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRsvp'
+          description: ''
+    delete:
+      operationId: api_rsvps_destroy
+      description: ViewSet para gerenciar RSVPs em eventos.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this event rsvp.
+        required: true
+      tags:
+      - RSVPs de Eventos
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/schema/:
+    get:
+      operationId: api_schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - api
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/users/:
+    get:
+      operationId: api_users_list
+      description: ViewSet para gerenciar usuários.
+      tags:
+      - Usuários
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+    post:
+      operationId: api_users_create
+      description: ViewSet para gerenciar usuários.
+      tags:
+      - Usuários
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/{id}/:
+    get:
+      operationId: api_users_retrieve
+      description: ViewSet para gerenciar usuários.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Usuários
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: api_users_update
+      description: ViewSet para gerenciar usuários.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Usuários
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: api_users_partial_update
+      description: ViewSet para gerenciar usuários.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Usuários
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: api_users_destroy
+      description: ViewSet para gerenciar usuários.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Usuários
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/{id}/set_role/:
+    patch:
+      operationId: api_users_set_role_partial_update
+      description: Permite que um administrador defina o papel de um usuário específico.
+      summary: Define o papel de um usuário (somente admin)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - Usuários
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/me/:
+    get:
+      operationId: api_users_me_retrieve
+      description: Provides GET and PATCH methods for the authenticated user's profile.
+      tags:
+      - Meu Perfil
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    put:
+      operationId: api_users_me_update
+      description: Provides GET and PATCH methods for the authenticated user's profile.
+      tags:
+      - Meu Perfil
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    patch:
+      operationId: api_users_me_partial_update
+      description: Provides GET and PATCH methods for the authenticated user's profile.
+      tags:
+      - Meu Perfil
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+      security:
+      - tokenAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+components:
+  schemas:
+    BlankEnum:
+      enum:
+      - ''
+    BusinessUnitEnum:
+      enum:
+      - Operadora Unimed
+      - Operadora Intermed
+      - Hospital Unimed Primavera (HUP)
+      - Centro Integrado Ilhotas (CIS)
+      - Unihome
+      - Unimed Parnaíba
+      - Intermed Parnaíba
+      - TheAcolher
+      type: string
+      description: |-
+        * `Operadora Unimed` - Operadora Unimed
+        * `Operadora Intermed` - Operadora Intermed
+        * `Hospital Unimed Primavera (HUP)` - Hospital Unimed Primavera (HUP)
+        * `Centro Integrado Ilhotas (CIS)` - Centro Integrado Ilhotas (CIS)
+        * `Unihome` - Unihome
+        * `Unimed Parnaíba` - Unimed Parnaíba
+        * `Intermed Parnaíba` - Intermed Parnaíba
+        * `TheAcolher` - TheAcolher
+    CalendarEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        created_by:
+          type: integer
+      required:
+      - created_by
+      - description
+      - end_time
+      - id
+      - start_time
+      - title
+    EstimatedImpactEnum:
+      enum:
+      - Baixo
+      - Médio
+      - Alto
+      type: string
+      description: |-
+        * `Baixo` - Baixo
+        * `Médio` - Médio
+        * `Alto` - Alto
+    EventRsvp:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        event:
+          type: integer
+        user:
+          type: integer
+      required:
+      - event
+      - id
+      - user
+    Idea:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        likes:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        stage:
+          $ref: '#/components/schemas/StageEnum'
+        submitted_by_email:
+          type: string
+          format: email
+          maxLength: 254
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        full_name:
+          type: string
+          maxLength: 255
+        submission_type:
+          $ref: '#/components/schemas/SubmissionTypeEnum'
+        team_members:
+          type: string
+          nullable: true
+          maxLength: 255
+        business_unit:
+          $ref: '#/components/schemas/BusinessUnitEnum'
+        department:
+          type: string
+          maxLength: 100
+        position:
+          type: string
+          maxLength: 100
+        idea_category:
+          $ref: '#/components/schemas/IdeaCategoryEnum'
+        expected_benefits:
+          type: string
+        required_resources:
+          type: string
+          nullable: true
+        estimated_impact:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/EstimatedImpactEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        implementation_timeline:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ImplementationTimelineEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        inspiration:
+          type: string
+          nullable: true
+          maxLength: 255
+        additional_comments:
+          type: string
+          nullable: true
+        is_featured:
+          type: boolean
+        current_location:
+          type: string
+          nullable: true
+          maxLength: 255
+        user:
+          type: integer
+          nullable: true
+      required:
+      - business_unit
+      - created_at
+      - department
+      - description
+      - expected_benefits
+      - full_name
+      - id
+      - idea_category
+      - likes
+      - position
+      - submission_type
+      - submitted_by_email
+      - title
+    IdeaCategoryEnum:
+      enum:
+      - Inovação de Produto/Serviço
+      - Melhoria de Processo
+      - Redução de Custos
+      - Aumento de Produtividade
+      - Satisfação do Cliente
+      - Bem-estar dos Colaboradores
+      - Sustentabilidade
+      - Tecnologia
+      - Outro
+      type: string
+      description: |-
+        * `Inovação de Produto/Serviço` - Inovação de Produto/Serviço
+        * `Melhoria de Processo` - Melhoria de Processo
+        * `Redução de Custos` - Redução de Custos
+        * `Aumento de Produtividade` - Aumento de Produtividade
+        * `Satisfação do Cliente` - Satisfação do Cliente
+        * `Bem-estar dos Colaboradores` - Bem-estar dos Colaboradores
+        * `Sustentabilidade` - Sustentabilidade
+        * `Tecnologia` - Tecnologia
+        * `Outro` - Outro
+    IdeaFeedback:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        feedback_text:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        idea:
+          type: string
+        author:
+          type: integer
+      required:
+      - author
+      - created_at
+      - feedback_text
+      - id
+      - idea
+    IdeaLike:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        idea:
+          type: string
+        user:
+          type: integer
+      required:
+      - id
+      - idea
+      - user
+    ImplementationTimelineEnum:
+      enum:
+      - Curto prazo (até 3 meses)
+      - Médio prazo (3 a 6 meses)
+      - Longo prazo (mais de 6 meses)
+      type: string
+      description: |-
+        * `Curto prazo (até 3 meses)` - Curto prazo (até 3 meses)
+        * `Médio prazo (3 a 6 meses)` - Médio prazo (3 a 6 meses)
+        * `Longo prazo (mais de 6 meses)` - Longo prazo (mais de 6 meses)
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+      - password
+    NewsArticle:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        content:
+          type: string
+        source_url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        published_at:
+          type: string
+          format: date-time
+        created_by:
+          type: integer
+      required:
+      - content
+      - created_by
+      - id
+      - title
+    NullEnum:
+      enum:
+      - null
+    PasswordChange:
+      type: object
+      properties:
+        new_password1:
+          type: string
+          maxLength: 128
+        new_password2:
+          type: string
+          maxLength: 128
+      required:
+      - new_password1
+      - new_password2
+    PasswordReset:
+      type: object
+      description: Serializer for requesting a password reset e-mail.
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    PasswordResetConfirm:
+      type: object
+      description: Serializer for confirming a password reset attempt.
+      properties:
+        new_password1:
+          type: string
+          maxLength: 128
+        new_password2:
+          type: string
+          maxLength: 128
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - new_password1
+      - new_password2
+      - token
+      - uid
+    PatchedCalendarEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        start_time:
+          type: string
+          format: date-time
+        end_time:
+          type: string
+          format: date-time
+        created_by:
+          type: integer
+    PatchedEventRsvp:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        event:
+          type: integer
+        user:
+          type: integer
+    PatchedIdea:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        likes:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        stage:
+          $ref: '#/components/schemas/StageEnum'
+        submitted_by_email:
+          type: string
+          format: email
+          maxLength: 254
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        full_name:
+          type: string
+          maxLength: 255
+        submission_type:
+          $ref: '#/components/schemas/SubmissionTypeEnum'
+        team_members:
+          type: string
+          nullable: true
+          maxLength: 255
+        business_unit:
+          $ref: '#/components/schemas/BusinessUnitEnum'
+        department:
+          type: string
+          maxLength: 100
+        position:
+          type: string
+          maxLength: 100
+        idea_category:
+          $ref: '#/components/schemas/IdeaCategoryEnum'
+        expected_benefits:
+          type: string
+        required_resources:
+          type: string
+          nullable: true
+        estimated_impact:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/EstimatedImpactEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        implementation_timeline:
+          nullable: true
+          oneOf:
+          - $ref: '#/components/schemas/ImplementationTimelineEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+          - $ref: '#/components/schemas/NullEnum'
+        inspiration:
+          type: string
+          nullable: true
+          maxLength: 255
+        additional_comments:
+          type: string
+          nullable: true
+        is_featured:
+          type: boolean
+        current_location:
+          type: string
+          nullable: true
+          maxLength: 255
+        user:
+          type: integer
+          nullable: true
+    PatchedIdeaFeedback:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        feedback_text:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        idea:
+          type: string
+        author:
+          type: integer
+    PatchedIdeaLike:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        idea:
+          type: string
+        user:
+          type: integer
+    PatchedNewsArticle:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        content:
+          type: string
+        source_url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        published_at:
+          type: string
+          format: date-time
+        created_by:
+          type: integer
+    PatchedUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+    PatchedUserDetails:
+      type: object
+      description: User model w/o password
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+    PatchedUserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+        email:
+          type: string
+          format: email
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        department:
+          type: string
+          maxLength: 100
+        position:
+          type: string
+          maxLength: 100
+        profile_photo:
+          type: string
+          format: uri
+          nullable: true
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+          maxLength: 150
+          minLength: 1
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+        password2:
+          type: string
+          writeOnly: true
+      required:
+      - password
+      - password2
+    ResendEmailVerification:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+    RestAuthDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+          readOnly: true
+      required:
+      - detail
+    RoleEnum:
+      enum:
+      - user
+      - admin
+      type: string
+      description: |-
+        * `user` - Usuário
+        * `admin` - Administrador
+    StageEnum:
+      enum:
+      - submitted
+      - innovation_sector
+      - responsible_manager
+      - innovation_committee
+      - board_of_directors
+      - projects
+      - implemented
+      type: string
+      description: |-
+        * `submitted` - Submetido
+        * `innovation_sector` - Setor de Inovação
+        * `responsible_manager` - Gestor Responsável
+        * `innovation_committee` - Comitê de Inovação
+        * `board_of_directors` - Diretoria
+        * `projects` - Projetos
+        * `implemented` - Implementado
+    StatusEnum:
+      enum:
+      - pending
+      - in_analysis
+      - re_evaluation
+      - approved
+      - rejected
+      type: string
+      description: |-
+        * `pending` - Pendente
+        * `in_analysis` - Em Análise
+        * `re_evaluation` - Em Reavaliação
+        * `approved` - Aprovado
+        * `rejected` - Rejeitado
+    SubmissionTypeEnum:
+      enum:
+      - Apenas eu
+      - Com minha equipe
+      type: string
+      description: |-
+        * `Apenas eu` - Apenas eu
+        * `Com minha equipe` - Com minha equipe
+    Token:
+      type: object
+      description: Serializer for Token model.
+      properties:
+        key:
+          type: string
+          maxLength: 40
+      required:
+      - key
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - email
+      - id
+      - username
+    UserDetails:
+      type: object
+      description: User model w/o password
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - email
+      - pk
+      - username
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+        email:
+          type: string
+          format: email
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        department:
+          type: string
+          maxLength: 100
+        position:
+          type: string
+          maxLength: 100
+        profile_photo:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - email
+      - id
+      - username
+    VerifyEmail:
+      type: object
+      properties:
+        key:
+          type: string
+          writeOnly: true
+      required:
+      - key
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
