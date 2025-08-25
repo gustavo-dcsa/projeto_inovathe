@@ -23,3 +23,6 @@ package-lock.json
 .DS_Store
 Thumbs.db
 backend/idea_bank/.env
+schema.yaml
+.gitignore
+projeto_banco_ideias.md
