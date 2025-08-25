@@ -1,0 +1,46 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import HomePage from './pages/HomePage';
+import TrackIdeaPage from './pages/TrackIdeaPage';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
+import NewSubmitIdeaPage from './pages/NewSubmitIdeaPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import UserProfilePage from './pages/UserProfilePage';
+import './index.css'; // I'm importing index.css here to get the Tailwind styles
+
+function App() {
+  return (
+    <Router>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/submit-idea" element={<NewSubmitIdeaPage />} />
+            <Route path="/track-idea" element={<TrackIdeaPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/users/me" element={<ProtectedRoute><UserProfilePage /></ProtectedRoute>} />
+            <Route path="/new-submit-idea" element={<NewSubmitIdeaPage />} />
+            <Route element={<ProtectedRoute adminOnly={true} />}>
+              <Route path="/admin" element={<AdminDashboardPage />} />
+            </Route>
+            {/* I will add the other routes here later */}
+          </Routes>
+        </main>
+        <Footer />
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+<input
+  type="password"
+  autoComplete="current-password"
+  // ...existing props...
+/>
