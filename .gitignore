@@ -22,3 +22,5 @@ package-lock.json
 # OS-specific
 .DS_Store
 Thumbs.db
+schema.yaml
+projeto_banco_ideias.md
