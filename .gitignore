@@ -23,3 +23,15 @@ package-lock.json
 .DS_Store
 Thumbs.db
 backend/idea_bank/.env
+
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+*.suo
+*.ntvs*
+
+# any other files or directories you want to ignore
+*.env
+*.local
+plataforma_inovacao.md
