@@ -7,7 +7,7 @@ from app.api import deps
 from app.db.session import get_db
 from app.models.idea import Idea, IdeaStatus
 from app.models.vote import Vote
-from app.models.user import User
+from app.models.user import User, UserRole
 from app.schemas.idea import IdeaCreate, IdeaResponse, IdeaUpdate, VoteCreate
 
 router = APIRouter()
@@ -46,12 +46,18 @@ async def read_ideas(
     ideas = result.scalars().all()
 
     # Calculate votes count
-    # Note: In a real high-perf scenario, this should be done via aggregation in SQL (group by)
-    # But for MVP with selectinload, this works.
     for idea in ideas:
         idea.votes_count = sum(v.value for v in idea.votes)
 
     return ideas
+
+def get_vote_weight(role: UserRole) -> int:
+    if role == UserRole.ADMIN:
+        return 3
+    elif role == UserRole.TECHNICAL:
+        return 2
+    else:
+        return 1
 
 @router.post("/{id}/vote")
 async def vote_idea(
@@ -66,20 +72,31 @@ async def vote_idea(
     if not idea:
         raise HTTPException(status_code=404, detail="Idea not found")
 
+    weight = get_vote_weight(current_user.role)
+    weighted_value = vote_in.value * weight
+
     # Check if vote exists
     result = await db.execute(select(Vote).where(Vote.user_id == current_user.id, Vote.idea_id == id))
     existing_vote = result.scalars().first()
 
     if existing_vote:
-        if existing_vote.value == vote_in.value:
+        # Check if the existing vote has the same direction (sign)
+        # If so, it's a toggle off.
+        # Note: existing_vote.value is the WEIGHTED value.
+        # We need to check if the sign matches.
+
+        existing_sign = 1 if existing_vote.value > 0 else -1
+        input_sign = 1 if vote_in.value > 0 else -1
+
+        if existing_sign == input_sign:
             # Toggle off
             await db.delete(existing_vote)
         else:
-            # Update
-            existing_vote.value = vote_in.value
+            # Update (switch vote direction, update weight if role changed)
+            existing_vote.value = weighted_value
     else:
         # Create
-        new_vote = Vote(user_id=current_user.id, idea_id=id, value=vote_in.value)
+        new_vote = Vote(user_id=current_user.id, idea_id=id, value=weighted_value)
         db.add(new_vote)
 
     await db.commit()
