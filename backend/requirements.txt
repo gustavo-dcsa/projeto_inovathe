@@ -11,3 +11,5 @@ pytest
 httpx
 email-validator
 pytest-asyncio
+pytest-cov
+ruff

@@ -1,8 +1,7 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Integer, DateTime, ForeignKey, PrimaryKeyConstraint
+from sqlalchemy import Integer, DateTime, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import UUID
 from app.db.session import Base
 
 class Vote(Base):

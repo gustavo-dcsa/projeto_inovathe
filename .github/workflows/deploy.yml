@@ -1,0 +1,75 @@
+name: Deploy Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Lint with Ruff
+        run: |
+          cd backend
+          ruff check .
+
+      - name: Run Tests with Coverage
+        run: |
+          cd backend
+          pytest --cov=app --cov-fail-under=80
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Lint
+        run: |
+          cd frontend
+          npm run lint
+
+      - name: Run Tests
+        run: |
+          cd frontend
+          npm test
+
+  build-push:
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Backend Image
+        run: docker build -t innovation-backend ./backend
+
+      - name: Build Frontend Image
+        run: docker build -t innovation-frontend ./frontend
+
+      - name: Push to GAR (Mock)
+        run: |
+          echo "Simulating Push to Google Artifact Registry"
+          echo "docker push gcr.io/my-project/innovation-backend:latest"
+          echo "docker push gcr.io/my-project/innovation-frontend:latest"

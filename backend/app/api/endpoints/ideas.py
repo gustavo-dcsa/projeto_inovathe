@@ -1,6 +1,6 @@
 from typing import Any, List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select, func
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api import deps
@@ -8,7 +8,7 @@ from app.db.session import get_db
 from app.models.idea import Idea, IdeaStatus, IdeaStage
 from app.models.vote import Vote
 from app.models.user import User, UserRole
-from app.schemas.idea import IdeaCreate, IdeaResponse, IdeaUpdate, VoteCreate
+from app.schemas.idea import IdeaCreate, IdeaResponse, VoteCreate
 
 router = APIRouter()
 

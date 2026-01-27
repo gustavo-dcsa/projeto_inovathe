@@ -10,11 +10,6 @@ from alembic import context
 
 # Import Base and Models
 from app.db.session import Base
-from app.models.user import User
-from app.models.campaign import Campaign
-from app.models.idea import Idea
-from app.models.vote import Vote
-from app.models.comment import Comment
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
