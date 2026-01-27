@@ -21,5 +21,5 @@ class CampaignResponse(BaseModel):
 async def read_campaigns(
     db: AsyncSession = Depends(get_db)
 ) -> Any:
-    result = await db.execute(select(Campaign).where(Campaign.is_active == True))
+    result = await db.execute(select(Campaign).where(Campaign.is_active))
     return result.scalars().all()
