@@ -5,7 +5,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api import deps
 from app.db.session import get_db
-from app.models.idea import Idea, IdeaStatus
+from app.models.idea import Idea, IdeaStatus, IdeaStage
 from app.models.vote import Vote
 from app.models.user import User, UserRole
 from app.schemas.idea import IdeaCreate, IdeaResponse, IdeaUpdate, VoteCreate
@@ -21,10 +21,19 @@ async def create_idea(
     idea = Idea(
         title=idea_in.title,
         description=idea_in.description,
+        category=idea_in.category,
+        expected_benefits=idea_in.expected_benefits,
+        resources_needed=idea_in.resources_needed,
+        expected_impact=idea_in.expected_impact,
+        estimated_time=idea_in.estimated_time,
+        references=idea_in.references,
+        is_team_submission=idea_in.is_team_submission,
+        team_members=idea_in.team_members,
         horizon=idea_in.horizon,
         campaign_id=idea_in.campaign_id,
         author_id=current_user.id,
-        status=IdeaStatus.SUBMITTED
+        status=IdeaStatus.PENDENTE,
+        stage=IdeaStage.SUBMETIDA
     )
     db.add(idea)
     await db.commit()
@@ -80,11 +89,6 @@ async def vote_idea(
     existing_vote = result.scalars().first()
 
     if existing_vote:
-        # Check if the existing vote has the same direction (sign)
-        # If so, it's a toggle off.
-        # Note: existing_vote.value is the WEIGHTED value.
-        # We need to check if the sign matches.
-
         existing_sign = 1 if existing_vote.value > 0 else -1
         input_sign = 1 if vote_in.value > 0 else -1
 
@@ -92,7 +96,7 @@ async def vote_idea(
             # Toggle off
             await db.delete(existing_vote)
         else:
-            # Update (switch vote direction, update weight if role changed)
+            # Update
             existing_vote.value = weighted_value
     else:
         # Create

@@ -10,6 +10,16 @@ class UserRole(str, enum.Enum):
     INNOVATOR = "innovator"
     TECHNICAL = "technical"
 
+class BusinessUnit(str, enum.Enum):
+    UNIMED_TERESINA = "Operadora Unimed"
+    INTERMED = "Operadora Intermed"
+    HUP = "Hospital Unimed Primavera (HUP)"
+    CIS = "Centro Integrado Ilhotas (CIS)"
+    UNIHOME = "Unihome"
+    UNIMED_PARNAIBA = "Unimed Parnaíba"
+    INTERMED_PARNAIBA = "Intermed Parnaíba"
+    THEACOLHER = "TheAcolher"
+
 class User(Base):
     __tablename__ = "users"
 
@@ -18,7 +28,12 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String)
     full_name: Mapped[str] = mapped_column(String)
     role: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.INNOVATOR)
-    department: Mapped[str] = mapped_column(String, nullable=True)
+
+    # New Fields
+    business_unit: Mapped[BusinessUnit] = mapped_column(Enum(BusinessUnit), nullable=True)
+    job_title: Mapped[str] = mapped_column(String, nullable=True)
+
+    department: Mapped[str] = mapped_column(String, nullable=True) # Kept for backward compatibility or general use
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     xp_points: Mapped[int] = mapped_column(Integer, default=0)
     badges: Mapped[dict] = mapped_column(JSON, default={})
