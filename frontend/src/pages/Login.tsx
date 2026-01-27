@@ -20,7 +20,7 @@ const Login: React.FC = () => {
       });
       localStorage.setItem('token', response.data.access_token);
       navigate('/dashboard');
-    } catch (err) {
+    } catch {
       setError('Login failed. Check credentials.');
     }
   };

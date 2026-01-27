@@ -1,15 +1,26 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import api from '@/services/api';
 import IdeaCard from '@/components/IdeaCard';
 import { Link } from 'react-router-dom';
 
+interface Idea {
+    id: string;
+    title: string;
+    description: string;
+    votes_count: number;
+    status: string;
+    horizon: string;
+    author_id: string;
+}
+
 const Dashboard: React.FC = () => {
   const [page, setPage] = useState(1);
-  const [ideas, setIdeas] = useState<any[]>([]);
+  const [ideas, setIdeas] = useState<Idea[]>([]);
   const limit = 9;
 
-  const { data: newIdeas, isLoading, error } = useQuery({
+  const { data: newIdeas, isLoading, error } = useQuery<Idea[]>({
     queryKey: ['ideas', page],
     queryFn: async () => {
       const skip = (page - 1) * limit;
@@ -20,13 +31,15 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (newIdeas) {
-      if (page === 1) {
-        setIdeas(newIdeas);
-      } else {
-        setIdeas(prev => [...prev, ...newIdeas]);
-      }
+        setIdeas(prev => {
+            if (page === 1) return newIdeas;
+            const prevIds = new Set(prev.map(i => i.id));
+            const uniqueNew = newIdeas.filter(i => !prevIds.has(i.id));
+            if (uniqueNew.length === 0) return prev;
+            return [...prev, ...uniqueNew];
+        });
     }
-  }, [newIdeas, page]);
+  }, [newIdeas]);
 
   if (isLoading && page === 1) return <div className="p-8 text-center">Carregando ideias...</div>;
   if (error) return <div className="p-8 text-center text-red-500">Erro ao carregar ideias</div>;
@@ -74,7 +87,7 @@ const Dashboard: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {ideas.map((idea: any) => (
+                {ideas.map((idea: Idea) => (
                     <IdeaCard key={idea.id} idea={idea} />
                 ))}
             </div>

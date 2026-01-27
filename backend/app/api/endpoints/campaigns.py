@@ -6,7 +6,6 @@ from app.db.session import get_db
 from app.models.campaign import Campaign
 from pydantic import BaseModel
 import uuid
-from datetime import datetime
 
 router = APIRouter()
 

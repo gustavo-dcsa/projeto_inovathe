@@ -26,7 +26,12 @@ const NewIdea: React.FC = () => {
   const [campaignId, setCampaignId] = useState('');
   const [horizon, setHorizon] = useState('');
 
-  const { data: campaigns } = useQuery({
+  interface Campaign {
+    id: string;
+    title: string;
+  }
+
+  const { data: campaigns } = useQuery<Campaign[]>({
     queryKey: ['campaigns'],
     queryFn: async () => {
       const res = await api.get('/campaigns');
@@ -35,7 +40,20 @@ const NewIdea: React.FC = () => {
   });
 
   const mutation = useMutation({
-    mutationFn: async (newIdea: any) => {
+    mutationFn: async (newIdea: {
+      title: string;
+      description: string;
+      is_team_submission: boolean;
+      team_members: string;
+      category: string;
+      expected_benefits: string;
+      resources_needed: string;
+      expected_impact: string;
+      estimated_time: string;
+      references: string;
+      campaign_id: string | null;
+      horizon: string | null;
+    }) => {
       return await api.post('/ideas', newIdea);
     },
     onSuccess: () => {
@@ -195,7 +213,7 @@ const NewIdea: React.FC = () => {
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
                   >
                     <option value="">Selecione...</option>
-                    {campaigns?.map((c: any) => (
+                    {campaigns?.map((c: Campaign) => (
                       <option key={c.id} value={c.id}>{c.title}</option>
                     ))}
                   </select>
