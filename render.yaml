@@ -27,7 +27,6 @@ services:
   - type: web
     name: innovation-frontend
     runtime: static
-    region: oregon
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: ./frontend/dist
     # Reescreve todas as rotas para index.html (SPA Routing)
@@ -36,11 +35,11 @@ services:
         source: /*
         destination: /index.html
     envVars:
-      - key: VITE_API_URL
+      - key: VITE_API_HOST
         fromService:
           type: web
           name: innovation-backend
-          property: url
+          property: host
 
 # Banco de Dados Gerenciado
 databases:
