@@ -28,45 +28,71 @@ const Dashboard: React.FC = () => {
     }
   }, [newIdeas, page]);
 
-  if (isLoading && page === 1) return <div className="p-8 text-center">Loading ideas...</div>;
-  if (error) return <div className="p-8 text-center text-red-500">Error loading ideas</div>;
+  if (isLoading && page === 1) return <div className="p-8 text-center">Carregando ideias...</div>;
+  if (error) return <div className="p-8 text-center text-red-500">Erro ao carregar ideias</div>;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">Innovation Dashboard</h1>
-          <div className="space-x-4">
-             <Link to="/ideas/new" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                + New Idea
-             </Link>
-             <button onClick={() => { localStorage.removeItem('token'); window.location.href='/login'; }} className="text-gray-600 hover:text-gray-900">
-                Logout
-             </button>
-          </div>
+
+      {/* Motivational Banner */}
+      <div className="bg-white shadow-sm border-b border-gray-100">
+        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-4xl font-extrabold text-mindmarket-1 mb-2">
+              Transforme suas ideias em inovação na Unimed Teresina
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              O cooperativismo nos fortalece e sua criatividade nos impulsiona. Juntos, podemos construir um futuro ainda melhor.
+            </p>
+            <div className="flex justify-center gap-6 mb-8">
+               <div className="flex flex-col items-center">
+                  <span className="text-2xl">🤝</span>
+                  <span className="text-sm text-gray-500 mt-1">Cooperar para inovar</span>
+               </div>
+               <div className="flex flex-col items-center">
+                  <span className="text-2xl">🧩</span>
+                  <span className="text-sm text-gray-500 mt-1">Sua peça é fundamental</span>
+               </div>
+               <div className="flex flex-col items-center">
+                  <span className="text-2xl">📈</span>
+                  <span className="text-sm text-gray-500 mt-1">Crescimento contínuo</span>
+               </div>
+            </div>
+            <Link
+              to="/ideas/new"
+              className="inline-block bg-mindmarket-1 text-white text-lg font-bold px-8 py-3 rounded-full hover:bg-blue-600 transition shadow-lg transform hover:scale-105"
+            >
+               Submeta sua ideia agora
+            </Link>
         </div>
-      </header>
+      </div>
+
       <main>
-        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center mb-6">
+               <h2 className="text-2xl font-bold text-gray-800">Feed de Ideias</h2>
+               <div className="text-sm text-gray-500">Iniciativas recentes da nossa comunidade</div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {ideas.map((idea: any) => (
                     <IdeaCard key={idea.id} idea={idea} />
                 ))}
             </div>
+
             {ideas.length === 0 && !isLoading && (
-                <div className="text-center text-gray-500 py-12">
-                    No ideas found. Be the first to innovate!
+                <div className="text-center text-gray-500 py-12 bg-white rounded-lg shadow-sm">
+                    Nenhuma ideia encontrada. Seja o primeiro a inovar!
                 </div>
             )}
 
             {newIdeas && newIdeas.length === limit && (
-               <div className="mt-8 text-center">
+               <div className="mt-12 text-center">
                  <button
                     onClick={() => setPage(p => p + 1)}
-                    className="bg-gray-200 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-300 disabled:opacity-50"
+                    className="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-full hover:bg-gray-50 disabled:opacity-50 transition shadow-sm"
                     disabled={isLoading}
                  >
-                    {isLoading ? 'Loading...' : 'Load More'}
+                    {isLoading ? 'Carregando...' : 'Carregar Mais Ideias'}
                  </button>
                </div>
             )}
