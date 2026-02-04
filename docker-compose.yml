@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Serviço do Banco de Dados
+  db:
+    image: postgres:15-alpine
+    container_name: innovation-postgres-compose
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=innovation_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Serviço do Backend (API)
+  backend:
+    build: ./backend
+    container_name: innovation-backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      # Note que o host aqui é 'db', o nome do serviço acima, não 'localhost'
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/innovation_db
+      - SECRET_KEY=sua_chave_secreta_aqui
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Serviço do Frontend (React)
+  frontend:
+    build: ./frontend
+    container_name: innovation-frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_HOST=localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
