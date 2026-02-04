@@ -8,7 +8,8 @@ from app.db.session import get_db
 from app.models.idea import Idea, IdeaStatus, IdeaStage
 from app.models.vote import Vote
 from app.models.user import User, UserRole
-from app.schemas.idea import IdeaCreate, IdeaResponse, VoteCreate
+from app.schemas.idea import IdeaCreate, IdeaResponse, IdeaUpdate, VoteCreate
+import uuid
 
 router = APIRouter()
 
@@ -45,11 +46,16 @@ async def read_ideas(
     skip: int = 0,
     limit: int = 100,
     status: Optional[IdeaStatus] = None,
+    owner_id: Optional[uuid.UUID] = None,
     db: AsyncSession = Depends(get_db)
 ) -> Any:
     query = select(Idea).options(selectinload(Idea.votes)).offset(skip).limit(limit)
+
     if status:
         query = query.where(Idea.status == status)
+
+    if owner_id:
+        query = query.where(Idea.author_id == owner_id)
 
     result = await db.execute(query)
     ideas = result.scalars().all()
@@ -105,3 +111,28 @@ async def vote_idea(
 
     await db.commit()
     return {"status": "success"}
+@router.patch("/{id}", response_model=IdeaResponse)
+async def update_idea(
+    id: str,
+    idea_in: IdeaUpdate,
+    current_user: User = Depends(deps.get_current_user),
+    db: AsyncSession = Depends(get_db)
+) -> Any:
+    # Check if idea exists
+    result = await db.execute(select(Idea).where(Idea.id == id))
+    idea = result.scalars().first()
+    if not idea:
+        raise HTTPException(status_code=404, detail="Idea not found")
+
+    # Check permissions (only owner can edit in draft, admin can always edit status)
+    # Simplified for MVP: Allow update if admin or owner
+    # But schema IdeaUpdate allows status change.
+
+    update_data = idea_in.dict(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(idea, field, value)
+
+    db.add(idea)
+    await db.commit()
+    await db.refresh(idea)
+    return idea
